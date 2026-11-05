@@ -54,6 +54,7 @@ namespace NetPulse.Common
         public const byte PropertyTable = 15;
         public const byte Guid = 16;
         public const byte ParameterDictionary = 17;
+        public const byte Extended = 18;
         public const byte CustomMin = 100;
         public const byte CustomMax = 199;
     }

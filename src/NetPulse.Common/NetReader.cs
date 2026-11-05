@@ -40,6 +40,12 @@ namespace NetPulse.Common
 
         public bool ReadBool() => ReadByte() != 0;
 
+        public sbyte ReadSByte() => (sbyte)ReadByte();
+
+        public char ReadChar() => (char)ReadUShort();
+
+        public ulong ReadULong() => BinaryPrimitives.ReadUInt64LittleEndian(TakeSpan(8));
+
         public short ReadShort() => BinaryPrimitives.ReadInt16LittleEndian(TakeSpan(2));
 
         public ushort ReadUShort() => BinaryPrimitives.ReadUInt16LittleEndian(TakeSpan(2));
@@ -195,6 +201,20 @@ namespace NetPulse.Common
                     return ReadPropertyTable(depth);
                 case NetTypeCode.ParameterDictionary:
                     return ParameterDictionary.ReadFrom(this, depth + 1);
+            }
+
+            if (code == NetTypeCode.Extended)
+            {
+                var id = ReadUShort();
+                var extendedLength = ReadCount(1);
+
+                if (NetTypeRegistry.TryGetExtended(id, out var extended))
+                {
+                    var extendedStart = Take(extendedLength);
+                    return extended.Read(new NetReader(_data, extendedStart, extendedLength));
+                }
+
+                return OpaqueValue.ForExtended(id, ReadRaw(extendedLength));
             }
 
             if (code < NetTypeCode.CustomMin || code > NetTypeCode.CustomMax)

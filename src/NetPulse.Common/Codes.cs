@@ -34,6 +34,8 @@ namespace NetPulse.Common
         public const byte ObjectDestroy = 241;
         public const byte Rpc = 242;
         public const byte StateSync = 243;
+        public const byte Message = 244;
+        public const byte SyncVarSet = 245;
         public const byte ErrorInfo = 250;
 
         public const byte MaxUserEvent = 199;

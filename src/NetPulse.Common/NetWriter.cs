@@ -44,6 +44,12 @@ namespace NetPulse.Common
 
         public void WriteBool(bool value) => Reserve(1)[0] = value ? (byte)1 : (byte)0;
 
+        public void WriteSByte(sbyte value) => Reserve(1)[0] = (byte)value;
+
+        public void WriteChar(char value) => BinaryPrimitives.WriteUInt16LittleEndian(Reserve(2), value);
+
+        public void WriteULong(ulong value) => BinaryPrimitives.WriteUInt64LittleEndian(Reserve(8), value);
+
         public void WriteShort(short value) => BinaryPrimitives.WriteInt16LittleEndian(Reserve(2), value);
 
         public void WriteUShort(ushort value) => BinaryPrimitives.WriteUInt16LittleEndian(Reserve(2), value);
@@ -266,16 +272,28 @@ namespace NetPulse.Common
                     return;
                 case OpaqueValue ov:
                     WriteByte(ov.TypeCode);
+
+                    if (ov.TypeCode == NetTypeCode.Extended)
+                    {
+                        WriteUShort(ov.ExtendedId);
+                    }
+
                     WriteBytes(ov.Data);
                     return;
             }
 
             if (!NetTypeRegistry.TryGetByType(value.GetType(), out var entry))
             {
-                throw new NetSerializationException($"Type is not serializable: {value.GetType().FullName}. Register it with NetTypeRegistry.Register (codes 100-199).");
+                throw new NetSerializationException($"Type is not serializable: {value.GetType().FullName}. Register it with NetTypeRegistry.Register (codes 100-199) or RegisterExtended.");
             }
 
             WriteByte(entry.Code);
+
+            if (entry.IsExtended)
+            {
+                WriteUShort(entry.ExtendedId);
+            }
+
             var start = _length;
             entry.Write(this, value);
             var payload = _length - start;
