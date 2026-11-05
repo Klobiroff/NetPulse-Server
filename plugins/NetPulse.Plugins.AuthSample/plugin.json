@@ -1,0 +1,5 @@
+{
+  "name": "AuthSample",
+  "assembly": "NetPulse.Plugins.AuthSample.dll",
+  "auth": "NetPulse.Plugins.AuthSample.AuthSamplePlugin"
+}

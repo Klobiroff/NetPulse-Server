@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\NetPulse.Server\NetPulse.Server.csproj" />
+    <ProjectReference Include="..\..\tools\NetPulse.TestClient\NetPulse.TestClient.csproj" />
+    <ProjectReference Include="..\..\plugins\NetPulse.Plugins.Sample\NetPulse.Plugins.Sample.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <Target Name="CopySamplePlugin" AfterTargets="Build">
+    <PropertyGroup>
+      <SampleOut>$(MSBuildThisFileDirectory)..\..\plugins\NetPulse.Plugins.Sample\bin\$(Configuration)\net10.0\</SampleOut>
+    </PropertyGroup>
+    <ItemGroup>
+      <SampleFile Include="$(SampleOut)NetPulse.Plugins.Sample.dll;$(SampleOut)NetPulse.Plugins.Sample.pdb;$(SampleOut)plugin.json" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SampleFile)" DestinationFolder="$(OutDir)sample-plugin\NetPulse.Plugins.Sample\" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

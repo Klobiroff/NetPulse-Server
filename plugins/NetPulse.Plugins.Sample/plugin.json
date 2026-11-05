@@ -1,0 +1,5 @@
+{
+  "name": "NetPulse.Plugins.Sample",
+  "assembly": "NetPulse.Plugins.Sample.dll",
+  "factory": "NetPulse.Plugins.Sample.SamplePluginFactory"
+}

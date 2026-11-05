@@ -1,0 +1,15 @@
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.userprefs
+.vs/
+.idea/
+*.DotSettings.user
+TestResults/
+*.trx
+*.log
+artifacts/
+publish/
