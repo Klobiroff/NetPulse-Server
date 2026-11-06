@@ -13,3 +13,4 @@ TestResults/
 *.log
 artifacts/
 publish/
+site/

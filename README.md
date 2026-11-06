@@ -2,6 +2,19 @@
 
 Self-hosted .NET 10 networking server for Unity (Photon-style: lobby, rooms, properties, event cache, server-side plugins). Transport is LiteNetLib 1.3.5 over UDP, port 5055 by default. The Unity client package lives in `Packages/com.netpulse.unity`; the protocol code in `src/NetPulse.Common` is shared as source (see `tools/sync-common.ps1`).
 
+## Documentation
+
+The user manual is in `docs/manual` in English and Russian. It is built with MkDocs and published to GitHub Pages on every push to `main`: https://klobiroff.github.io/NetPulse-Server/ (Russian version under `/ru/`).
+
+To build it locally:
+
+```
+pip install -r requirements-docs.txt
+mkdocs serve
+```
+
+Start with `docs/manual/en/getting-started.md`. The server pages are under `server/`, the plugin guide under `plugins/`, and the wire protocol and code tables under `reference/`.
+
 ## Layout
 
 | Path | What |

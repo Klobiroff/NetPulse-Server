@@ -1,0 +1,163 @@
+site_name: NetPulse
+site_description: Self-hosted .NET networking server with room plugins and a Unity client package.
+site_url: https://klobiroff.github.io/NetPulse-Server/
+repo_url: https://github.com/Klobiroff/NetPulse-Server
+repo_name: Klobiroff/NetPulse-Server
+docs_dir: docs/manual
+use_directory_urls: true
+
+validation:
+  nav:
+    omitted_files: warn
+    absolute_links: warn
+  links:
+    not_found: warn
+    anchors: warn
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - navigation.path
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search
+  - i18n:
+      docs_structure: folder
+      fallback_to_default: false
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: ru
+          name: Русский
+          build: true
+          nav_translations:
+            Home: Главная
+            Getting started: Быстрый старт
+            Concepts: Основные понятия
+            Unity client: Unity-клиент
+            Installation: Установка
+            Connecting: Подключение
+            Matchmaking: Подбор комнат
+            Rooms and properties: Комнаты и свойства
+            Messages: Сообщения
+            Network objects: Сетевые объекты
+            RPC: RPC
+            State sync: Синхронизация состояния
+            Ownership: Владение
+            Lifecycle: Жизненный цикл
+            Ticks and time: Тики и время
+            Scenes: Сцены
+            Async: Async
+            Components: Компоненты
+            Offline mode: Офлайн-режим
+            Settings and editor: Настройки и редактор
+            IL2CPP: IL2CPP
+            Analyzers: Анализаторы
+            Low-level API: Низкоуровневый API
+            Server: Сервер
+            Running the server: Запуск сервера
+            Configuration: Конфигурация
+            Deployment: Развёртывание
+            Operations: Эксплуатация
+            Security: Безопасность
+            Plugins: Плагины
+            Overview: Обзор
+            Writing a plugin: Написание плагина
+            Hooks: Хуки
+            Host API: API хоста
+            Timers, HTTP and background work: Таймеры, HTTP и фоновая работа
+            Authentication: Аутентификация
+            Hot reload: Горячая перезагрузка
+            Testing: Тестирование
+            Reference: Справочник
+            Wire protocol: Сетевой протокол
+            Codes and keys: Коды и ключи
+            Migrating from PUN: Переход с PUN
+            Troubleshooting: Решение проблем
+            Changelog: История изменений
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Concepts: concepts.md
+  - Unity client:
+      - Installation: unity/installation.md
+      - Connecting: unity/connecting.md
+      - Matchmaking: unity/matchmaking.md
+      - Rooms and properties: unity/rooms-and-properties.md
+      - Messages: unity/messages.md
+      - Network objects: unity/network-objects.md
+      - RPC: unity/rpc.md
+      - State sync: unity/state-sync.md
+      - Ownership: unity/ownership.md
+      - Lifecycle: unity/lifecycle.md
+      - Ticks and time: unity/ticks-and-time.md
+      - Scenes: unity/scenes.md
+      - Async: unity/async.md
+      - Components: unity/components.md
+      - Offline mode: unity/offline-mode.md
+      - Settings and editor: unity/settings-and-editor.md
+      - IL2CPP: unity/il2cpp.md
+      - Analyzers: unity/analyzers.md
+      - Low-level API: unity/low-level-api.md
+  - Server:
+      - Running the server: server/running.md
+      - Configuration: server/configuration.md
+      - Deployment: server/deployment.md
+      - Operations: server/operations.md
+      - Security: server/security.md
+  - Plugins:
+      - Overview: plugins/overview.md
+      - Writing a plugin: plugins/writing-a-plugin.md
+      - Hooks: plugins/hooks.md
+      - Host API: plugins/host-api.md
+      - Timers, HTTP and background work: plugins/timers-http-background.md
+      - Authentication: plugins/authentication.md
+      - Hot reload: plugins/hot-reload.md
+      - Testing: plugins/testing.md
+  - Reference:
+      - Wire protocol: reference/protocol.md
+      - Codes and keys: reference/codes.md
+  - Migrating from PUN: migrating-from-pun.md
+  - Troubleshooting: troubleshooting.md
+  - Changelog: changelog.md
