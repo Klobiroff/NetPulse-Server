@@ -1,0 +1,309 @@
+using System;
+using System.Collections.Generic;
+using NetPulse.Common;
+
+namespace UnityEngine
+{
+    public struct Vector2
+    {
+        public float x;
+        public float y;
+    }
+
+    public struct Vector3
+    {
+        public float x;
+        public float y;
+        public float z;
+    }
+
+    public struct Vector4
+    {
+        public float x;
+    }
+
+    public struct Quaternion
+    {
+        public float x;
+    }
+
+    public struct Color
+    {
+        public float r;
+    }
+
+    public struct Color32
+    {
+        public byte r;
+    }
+
+    public struct Vector2Int
+    {
+        public int x;
+    }
+
+    public struct Vector3Int
+    {
+        public int x;
+    }
+
+    public struct Rect
+    {
+        public float x;
+    }
+
+    public class Object
+    {
+    }
+
+    public class Component : Object
+    {
+    }
+
+    public class MonoBehaviour : Component
+    {
+    }
+
+    public enum RuntimeInitializeLoadType
+    {
+        AfterSceneLoad,
+        BeforeSceneLoad,
+        AfterAssembliesLoaded,
+        BeforeSplashScreen,
+        SubsystemRegistration
+    }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class RuntimeInitializeOnLoadMethodAttribute : Attribute
+    {
+        public RuntimeInitializeOnLoadMethodAttribute(RuntimeInitializeLoadType loadType)
+        {
+        }
+    }
+}
+
+namespace UnityEditor
+{
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class InitializeOnLoadMethodAttribute : Attribute
+    {
+    }
+}
+
+namespace NetPulse
+{
+    public enum RpcTarget
+    {
+        All,
+        Others,
+        MasterClient,
+        Owner,
+        AllBuffered,
+        OthersBuffered
+    }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class NetRpcAttribute : Attribute
+    {
+        public NetRpcAttribute(RpcTarget target = RpcTarget.All)
+        {
+            Target = target;
+        }
+
+        public RpcTarget Target { get; }
+
+        public DeliveryMode Delivery { get; set; } = DeliveryMode.ReliableOrdered;
+
+        public bool OwnerOnly { get; set; }
+    }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public sealed class SyncedAttribute : Attribute
+    {
+    }
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public sealed class NetSerializableAttribute : Attribute
+    {
+    }
+
+    public interface INetMessage
+    {
+    }
+
+    public readonly struct NetRpcInfo
+    {
+        public NetRpcInfo(Player sender, int senderActorId, double serverTime)
+        {
+            Sender = sender;
+            SenderActorId = senderActorId;
+            ServerTime = serverTime;
+        }
+
+        public Player Sender { get; }
+
+        public int SenderActorId { get; }
+
+        public double ServerTime { get; }
+    }
+
+    public sealed class Player
+    {
+        public Player(int actorId) => ActorId = actorId;
+
+        public int ActorId { get; }
+    }
+
+    public sealed class NetworkObject : UnityEngine.MonoBehaviour
+    {
+        public int ViewId { get; set; }
+    }
+
+    public enum SyncPermission
+    {
+        Owner,
+        Master
+    }
+
+    public sealed class SyncVar<T>
+    {
+        public SyncVar(T value = default, SyncPermission permission = SyncPermission.Owner)
+        {
+            Value = value;
+            Permission = permission;
+        }
+
+        public T Value { get; set; }
+
+        public SyncPermission Permission { get; }
+
+        public event Action<T, T> Changed;
+    }
+
+    public sealed class SyncVarCollector
+    {
+        public List<string> Registered { get; } = new List<string>();
+
+        public void Add<T>(SyncVar<T> variable, Action<NetWriter, T> write, Func<NetReader, T> read)
+        {
+            if (variable == null || write == null || read == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            Registered.Add(typeof(T).Name);
+        }
+    }
+
+    public static class NetMessageRegistry
+    {
+        public static Dictionary<ushort, Type> Registered { get; } = new Dictionary<ushort, Type>();
+
+        public static void Register<T>(ushort id, Action<NetWriter, T> write, Func<NetReader, T> read) => Registered[id] = typeof(T);
+    }
+
+    public abstract class NetworkBehaviour : UnityEngine.MonoBehaviour
+    {
+        public static List<KeyValuePair<ushort, byte[]>> Sent { get; } = new List<KeyValuePair<ushort, byte[]>>();
+
+        public static List<string> SendInfo { get; } = new List<string>();
+
+        public bool InvokeForTest(ushort rpcId, byte[] data, Player sender = null)
+        {
+            var info = new NetRpcInfo(sender, sender == null ? 0 : sender.ActorId, 1.5);
+            return InvokeGeneratedRpc(rpcId, new NetReader(data), in info);
+        }
+
+        public SyncVarCollector CollectForTest()
+        {
+            var collector = new SyncVarCollector();
+            RegisterSyncVars(collector);
+            return collector;
+        }
+
+        public void CallRpc(string methodName, RpcTarget target, params object[] arguments)
+        {
+        }
+
+        protected NetWriter BeginRpc() => new NetWriter();
+
+        protected void SendRpc(ushort rpcId, RpcTarget? target, Player player, NetWriter args, DeliveryMode delivery, bool ownerOnly)
+        {
+            Sent.Add(new KeyValuePair<ushort, byte[]>(rpcId, args.ToArray()));
+            SendInfo.Add(target + "|" + (player == null ? "-" : player.ActorId.ToString()) + "|" + delivery + "|" + ownerOnly);
+        }
+
+        protected virtual bool InvokeGeneratedRpc(ushort rpcId, NetReader reader, in NetRpcInfo info) => false;
+
+        protected virtual void RegisterSyncVars(SyncVarCollector collector)
+        {
+        }
+    }
+
+    public static class NetPulseWriterExtensions
+    {
+        public static void WriteVector2(this NetWriter writer, UnityEngine.Vector2 value)
+        {
+            writer.WriteFloat(value.x);
+            writer.WriteFloat(value.y);
+        }
+
+        public static void WriteVector3(this NetWriter writer, UnityEngine.Vector3 value)
+        {
+            writer.WriteFloat(value.x);
+            writer.WriteFloat(value.y);
+            writer.WriteFloat(value.z);
+        }
+
+        public static void WriteVector4(this NetWriter writer, UnityEngine.Vector4 value) => writer.WriteFloat(value.x);
+
+        public static void WriteQuaternion(this NetWriter writer, UnityEngine.Quaternion value) => writer.WriteFloat(value.x);
+
+        public static void WriteColor(this NetWriter writer, UnityEngine.Color value) => writer.WriteFloat(value.r);
+
+        public static void WriteColor32(this NetWriter writer, UnityEngine.Color32 value) => writer.WriteByte(value.r);
+
+        public static void WriteVector2Int(this NetWriter writer, UnityEngine.Vector2Int value) => writer.WriteInt(value.x);
+
+        public static void WriteVector3Int(this NetWriter writer, UnityEngine.Vector3Int value) => writer.WriteInt(value.x);
+
+        public static void WriteRect(this NetWriter writer, UnityEngine.Rect value) => writer.WriteFloat(value.x);
+
+        public static void WritePlayer(this NetWriter writer, Player value) => writer.WriteInt(value == null ? 0 : value.ActorId);
+
+        public static void WriteNetworkObject(this NetWriter writer, NetworkObject value) => writer.WriteInt(value == null ? 0 : value.ViewId);
+    }
+
+    public static class NetPulseReaderExtensions
+    {
+        public static UnityEngine.Vector2 ReadVector2(this NetReader reader) => new UnityEngine.Vector2 { x = reader.ReadFloat(), y = reader.ReadFloat() };
+
+        public static UnityEngine.Vector3 ReadVector3(this NetReader reader) => new UnityEngine.Vector3 { x = reader.ReadFloat(), y = reader.ReadFloat(), z = reader.ReadFloat() };
+
+        public static UnityEngine.Vector4 ReadVector4(this NetReader reader) => new UnityEngine.Vector4 { x = reader.ReadFloat() };
+
+        public static UnityEngine.Quaternion ReadQuaternion(this NetReader reader) => new UnityEngine.Quaternion { x = reader.ReadFloat() };
+
+        public static UnityEngine.Color ReadColor(this NetReader reader) => new UnityEngine.Color { r = reader.ReadFloat() };
+
+        public static UnityEngine.Color32 ReadColor32(this NetReader reader) => new UnityEngine.Color32 { r = reader.ReadByte() };
+
+        public static UnityEngine.Vector2Int ReadVector2Int(this NetReader reader) => new UnityEngine.Vector2Int { x = reader.ReadInt() };
+
+        public static UnityEngine.Vector3Int ReadVector3Int(this NetReader reader) => new UnityEngine.Vector3Int { x = reader.ReadInt() };
+
+        public static UnityEngine.Rect ReadRect(this NetReader reader) => new UnityEngine.Rect { x = reader.ReadFloat() };
+
+        public static Player ReadPlayer(this NetReader reader)
+        {
+            var id = reader.ReadInt();
+            return id == 0 ? null : new Player(id);
+        }
+
+        public static NetworkObject ReadNetworkObject(this NetReader reader)
+        {
+            var id = reader.ReadInt();
+            return id == 0 ? null : new NetworkObject { ViewId = id };
+        }
+    }
+}

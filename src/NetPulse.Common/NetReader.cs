@@ -274,7 +274,7 @@ namespace NetPulse.Common
             return result;
         }
 
-        private int ReadCount(int minElementSize)
+        public int ReadCount(int minElementSize)
         {
             var count = ReadVarUInt();
 

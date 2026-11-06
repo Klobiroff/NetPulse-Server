@@ -115,6 +115,8 @@ namespace NetPulse.Common
         public const byte ViewIds = 45;
         public const byte OwnershipModes = 46;
         public const byte RequesterActorId = 47;
+        public const byte ObjectFlags = 48;
+        public const byte TickRate = 49;
 
         public const byte IsFullList = 50;
         public const byte Rooms = 51;

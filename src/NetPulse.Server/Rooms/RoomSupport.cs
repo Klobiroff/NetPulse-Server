@@ -41,6 +41,7 @@ public sealed class RoomServices
         Plugins = plugins;
         HttpFactory = httpFactory;
         QueueCapacity = Math.Max(1, options.Value.RoomQueueCapacity);
+        TickRate = Math.Max(1, options.Value.TickRate);
         OwnershipRequestTimeoutMs = Math.Max(1, options.Value.OwnershipRequestTimeoutMs);
         Flood = new FloodGuard(loggerFactory.CreateLogger("NetPulse.Flood"), metrics, options.Value.PeerQueueLimit);
     }
@@ -56,6 +57,8 @@ public sealed class RoomServices
     public IHttpClientFactory HttpFactory { get; }
 
     public int QueueCapacity { get; }
+
+    public int TickRate { get; }
 
     public int OwnershipRequestTimeoutMs { get; }
 

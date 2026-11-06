@@ -65,4 +65,9 @@ namespace NetPulse.Common
         Takeover,
         Request
     }
+
+    public static class ObjectFlag
+    {
+        public const byte PersistAcrossScenes = 1;
+    }
 }

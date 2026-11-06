@@ -15,6 +15,7 @@ public sealed partial class Room
     private readonly ILogger _logger;
     private readonly Fiber _fiber;
     private readonly PropertyTable _properties;
+    private string? _currentScene;
     private readonly List<RoomActor> _actors = new();
     private readonly List<CachedEvent> _cache = new();
     private readonly PluginHost _host;
@@ -39,6 +40,7 @@ public sealed partial class Room
         _properties[RoomPropertyKeys.IsOpen] = options.IsOpen;
         _properties[RoomPropertyKeys.IsVisible] = options.IsVisible;
         _properties[RoomPropertyKeys.MaxPlayers] = (int)options.MaxPlayers;
+        _currentScene = _properties.Get<string>(RoomPropertyKeys.Scene);
         _host = new PluginHost(this, _logger, services.Clock, services.HttpFactory);
         _plugin = new PassThroughPlugin(_host);
         _services.Metrics.RoomCreated();
@@ -501,7 +503,8 @@ public sealed partial class Room
             MaxPlayers = _options.MaxPlayers,
             IsOpen = _options.IsOpen,
             IsVisible = _options.IsVisible,
-            IsRejoin = rejoin
+            IsRejoin = rejoin,
+            TickRate = _services.TickRate
         };
 
         context.Peer.SendResponse(context.OpCode, context.RequestId, ReturnCode.Ok, null, response.ToParameters());
@@ -745,6 +748,17 @@ public sealed partial class Room
 
     private void SyncReservedKeys(PropertyTable delta)
     {
+        if (delta.ContainsKey(RoomPropertyKeys.Scene))
+        {
+            var scene = _properties.Get<string>(RoomPropertyKeys.Scene);
+
+            if (scene != _currentScene)
+            {
+                _currentScene = scene;
+                PurgeSceneBoundObjects();
+            }
+        }
+
         if (delta.ContainsKey(RoomPropertyKeys.IsOpen))
         {
             _options.IsOpen = _properties.Get(RoomPropertyKeys.IsOpen, true);

@@ -9,7 +9,7 @@ public sealed class NetworkObjectState : INetworkObject
 {
     private readonly Room _room;
 
-    public NetworkObjectState(Room room, int viewId, int creatorActorId, int ownerActorId, ObjectOwnershipMode mode, bool isSceneObject)
+    public NetworkObjectState(Room room, int viewId, int creatorActorId, int ownerActorId, ObjectOwnershipMode mode, bool isSceneObject, bool isPersistent = false)
     {
         _room = room;
         ViewId = viewId;
@@ -17,6 +17,7 @@ public sealed class NetworkObjectState : INetworkObject
         RawOwner = ownerActorId;
         OwnershipMode = mode;
         IsSceneObject = isSceneObject;
+        IsPersistent = isPersistent;
     }
 
     public int ViewId { get; }
@@ -30,6 +31,8 @@ public sealed class NetworkObjectState : INetworkObject
     public ObjectOwnershipMode OwnershipMode { get; set; }
 
     public bool IsSceneObject { get; }
+
+    public bool IsPersistent { get; }
 }
 
 public sealed partial class Room
@@ -96,6 +99,20 @@ public sealed partial class Room
                 }
 
                 return true;
+            case EventCode.SyncVarSet:
+                if (actor.ActorId != _masterClientId)
+                {
+                    RejectObjectOperation(context, actor, "Only the master client can set master sync variables");
+                    return false;
+                }
+
+                if (GetObject(request.ViewId) is null)
+                {
+                    RespondIfRequested(context, ReturnCode.Ok);
+                    return false;
+                }
+
+                return true;
             case EventCode.StateSync:
                 var source = GetObject(request.ViewId);
 
@@ -143,7 +160,7 @@ public sealed partial class Room
     {
         if (request.EventCode == EventCode.ObjectInstantiate && senderActorId > 0 && request.ViewId >= ViewIdsPerActor && !_objects.ContainsKey(request.ViewId))
         {
-            _objects[request.ViewId] = new NetworkObjectState(this, request.ViewId, senderActorId, senderActorId, request.OwnershipMode, false);
+            _objects[request.ViewId] = new NetworkObjectState(this, request.ViewId, senderActorId, senderActorId, request.OwnershipMode, false, (request.ObjectFlags & ObjectFlag.PersistAcrossScenes) != 0);
             return;
         }
 
@@ -152,6 +169,23 @@ public sealed partial class Room
             _objects.Remove(request.ViewId);
             CancelPending(request.ViewId);
         }
+    }
+
+    private void PurgeSceneBoundObjects()
+    {
+        var removed = new HashSet<int>();
+
+        foreach (var obj in _objects.Values.ToArray())
+        {
+            if (obj.IsSceneObject || !obj.IsPersistent)
+            {
+                removed.Add(obj.ViewId);
+                _objects.Remove(obj.ViewId);
+                CancelPending(obj.ViewId);
+            }
+        }
+
+        _cache.RemoveAll(e => e.ViewId != 0 && (removed.Contains(e.ViewId) || IsSceneViewId(e.ViewId)));
     }
 
     private async ValueTask HandleTransferOwnershipAsync(RoomRequestContext context, RoomActor actor, TransferOwnershipRequest request)

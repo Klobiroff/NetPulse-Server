@@ -104,7 +104,8 @@ public sealed class BotClient : IDisposable
         byte interestGroup = 0,
         int viewId = 0,
         int[]? targets = null,
-        ObjectOwnershipMode ownershipMode = ObjectOwnershipMode.Fixed)
+        ObjectOwnershipMode ownershipMode = ObjectOwnershipMode.Fixed,
+        byte objectFlags = 0)
     {
         var request = new RaiseEventRequest
         {
@@ -115,7 +116,8 @@ public sealed class BotClient : IDisposable
             InterestGroup = interestGroup,
             ViewId = viewId,
             TargetActors = targets,
-            OwnershipMode = ownershipMode
+            OwnershipMode = ownershipMode,
+            ObjectFlags = objectFlags
         };
 
         return RequestAsync(OpCode.RaiseEvent, request.ToParameters());

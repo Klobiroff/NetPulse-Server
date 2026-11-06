@@ -114,6 +114,8 @@ namespace NetPulse.Common
 
         public bool IsRejoin { get; set; }
 
+        public int TickRate { get; set; }
+
         public ParameterDictionary ToParameters() => new()
         {
             [ParamKey.RoomName] = RoomName,
@@ -125,7 +127,8 @@ namespace NetPulse.Common
             [ParamKey.MaxPlayers] = MaxPlayers,
             [ParamKey.IsOpen] = IsOpen,
             [ParamKey.IsVisible] = IsVisible,
-            [ParamKey.IsRejoin] = IsRejoin
+            [ParamKey.IsRejoin] = IsRejoin,
+            [ParamKey.TickRate] = TickRate
         };
 
         public static JoinRoomResponse FromParameters(ParameterDictionary parameters) => new()
@@ -139,7 +142,8 @@ namespace NetPulse.Common
             MaxPlayers = parameters.Get<byte>(ParamKey.MaxPlayers),
             IsOpen = parameters.Get(ParamKey.IsOpen, true),
             IsVisible = parameters.Get(ParamKey.IsVisible, true),
-            IsRejoin = parameters.Get<bool>(ParamKey.IsRejoin)
+            IsRejoin = parameters.Get<bool>(ParamKey.IsRejoin),
+            TickRate = parameters.Get<int>(ParamKey.TickRate)
         };
     }
 
@@ -178,6 +182,8 @@ namespace NetPulse.Common
 
         public ObjectOwnershipMode OwnershipMode { get; set; }
 
+        public byte ObjectFlags { get; set; }
+
         public ParameterDictionary ToParameters() => new()
         {
             [ParamKey.EventCode] = EventCode,
@@ -188,7 +194,8 @@ namespace NetPulse.Common
             [ParamKey.Caching] = (byte)Caching,
             [ParamKey.Delivery] = (byte)Delivery,
             [ParamKey.ViewId] = ViewId,
-            [ParamKey.OwnershipMode] = (byte)OwnershipMode
+            [ParamKey.OwnershipMode] = (byte)OwnershipMode,
+            [ParamKey.ObjectFlags] = ObjectFlags
         };
 
         public static RaiseEventRequest FromParameters(ParameterDictionary parameters) => new()
@@ -201,7 +208,8 @@ namespace NetPulse.Common
             Caching = parameters.Get<CachingOption>(ParamKey.Caching),
             Delivery = parameters.Get<DeliveryMode>(ParamKey.Delivery),
             ViewId = parameters.Get<int>(ParamKey.ViewId),
-            OwnershipMode = parameters.Get<ObjectOwnershipMode>(ParamKey.OwnershipMode)
+            OwnershipMode = parameters.Get<ObjectOwnershipMode>(ParamKey.OwnershipMode),
+            ObjectFlags = parameters.Get<byte>(ParamKey.ObjectFlags)
         };
     }
 

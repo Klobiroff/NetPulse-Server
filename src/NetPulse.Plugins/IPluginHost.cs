@@ -77,4 +77,6 @@ public interface INetworkObject
     ObjectOwnershipMode OwnershipMode { get; }
 
     bool IsSceneObject { get; }
+
+    bool IsPersistent { get; }
 }

@@ -7,10 +7,12 @@
     <Project Path="src/NetPulse.Common/NetPulse.Common.csproj" />
     <Project Path="src/NetPulse.Plugins/NetPulse.Plugins.csproj" />
     <Project Path="src/NetPulse.Server/NetPulse.Server.csproj" />
+    <Project Path="src/NetPulse.Unity.Generators/NetPulse.Unity.Generators.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/NetPulse.Common.Tests/NetPulse.Common.Tests.csproj" />
     <Project Path="tests/NetPulse.Server.Tests/NetPulse.Server.Tests.csproj" />
+    <Project Path="tests/NetPulse.Unity.Generators.Tests/NetPulse.Unity.Generators.Tests.csproj" />
   </Folder>
   <Folder Name="/tools/">
     <Project Path="tools/NetPulse.TestClient/NetPulse.TestClient.csproj" />

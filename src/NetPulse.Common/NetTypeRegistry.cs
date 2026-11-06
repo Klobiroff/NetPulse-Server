@@ -13,11 +13,18 @@ namespace NetPulse.Common
 
         public byte TypeCode { get; set; }
 
+        public ushort ExtendedId { get; set; }
+
         public byte[] Data { get; set; }
+
+        public static OpaqueValue ForExtended(ushort id, byte[] data) => new(NetTypeCode.Extended, data)
+        {
+            ExtendedId = id
+        };
 
         public bool Equals(OpaqueValue other)
         {
-            if (other is null || TypeCode != other.TypeCode || Data.Length != other.Data.Length)
+            if (other is null || TypeCode != other.TypeCode || ExtendedId != other.ExtendedId || Data.Length != other.Data.Length)
             {
                 return false;
             }
@@ -35,9 +42,11 @@ namespace NetPulse.Common
 
         public override bool Equals(object obj) => Equals(obj as OpaqueValue);
 
-        public override int GetHashCode() => (TypeCode * 397) ^ Data.Length;
+        public override int GetHashCode() => (((TypeCode * 397) ^ ExtendedId) * 397) ^ Data.Length;
 
-        public override string ToString() => $"Opaque({TypeCode}, {Data.Length} bytes)";
+        public override string ToString() => TypeCode == NetTypeCode.Extended
+            ? $"Opaque(Extended {ExtendedId}, {Data.Length} bytes)"
+            : $"Opaque({TypeCode}, {Data.Length} bytes)";
     }
 
     public static class NetTypeRegistry
@@ -45,6 +54,7 @@ namespace NetPulse.Common
         private static readonly object Gate = new();
         private static readonly Entry[] ByCode = new Entry[256];
         private static volatile Dictionary<Type, Entry> _byType = new();
+        private static volatile Dictionary<ushort, Entry> _extendedById = new();
 
         public static void Register<T>(byte code, Action<NetWriter, T> write, Func<NetReader, T> read)
         {
@@ -87,7 +97,69 @@ namespace NetPulse.Common
             }
         }
 
+        public static void RegisterExtended<T>(ushort id, Action<NetWriter, T> write, Func<NetReader, T> read)
+        {
+            if (write == null)
+            {
+                throw new ArgumentNullException(nameof(write));
+            }
+
+            if (read == null)
+            {
+                throw new ArgumentNullException(nameof(read));
+            }
+
+            var entry = new Entry(typeof(T), NetTypeCode.Extended, (w, o) => write(w, (T)o), r => read(r))
+            {
+                ExtendedId = id
+            };
+
+            lock (Gate)
+            {
+                if (_extendedById.TryGetValue(id, out var existing) && existing.Type != typeof(T))
+                {
+                    throw new InvalidOperationException($"Extended id {id} is already registered for {existing.Type.FullName}.");
+                }
+
+                var byType = new Dictionary<Type, Entry>(_byType);
+
+                if (byType.TryGetValue(typeof(T), out var old) && (!old.IsExtended || old.ExtendedId != id))
+                {
+                    throw new InvalidOperationException($"{typeof(T).FullName} is already registered with a different code.");
+                }
+
+                var byId = new Dictionary<ushort, Entry>(_extendedById)
+                {
+                    [id] = entry
+                };
+
+                byType[typeof(T)] = entry;
+                _extendedById = byId;
+                _byType = byType;
+            }
+        }
+
         public static bool IsRegistered(byte code) => ByCode[code] != null;
+
+        public static bool IsExtendedRegistered(ushort id) => _extendedById.ContainsKey(id);
+
+        public static void UnregisterExtended(ushort id)
+        {
+            lock (Gate)
+            {
+                if (!_extendedById.TryGetValue(id, out var existing))
+                {
+                    return;
+                }
+
+                var byType = new Dictionary<Type, Entry>(_byType);
+                byType.Remove(existing.Type);
+                var byId = new Dictionary<ushort, Entry>(_extendedById);
+                byId.Remove(id);
+                _byType = byType;
+                _extendedById = byId;
+            }
+        }
 
         public static void Unregister(byte code)
         {
@@ -108,6 +180,8 @@ namespace NetPulse.Common
         }
 
         internal static bool TryGetByType(Type type, out Entry entry) => _byType.TryGetValue(type, out entry);
+
+        internal static bool TryGetExtended(ushort id, out Entry entry) => _extendedById.TryGetValue(id, out entry);
 
         internal static bool TryGetByCode(byte code, out Entry entry)
         {
@@ -132,6 +206,10 @@ namespace NetPulse.Common
             public Action<NetWriter, object> Write { get; }
 
             public Func<NetReader, object> Read { get; }
+
+            public ushort ExtendedId { get; set; }
+
+            public bool IsExtended => Code == NetTypeCode.Extended;
         }
     }
 }

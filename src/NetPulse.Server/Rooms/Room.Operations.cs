@@ -80,7 +80,7 @@ public sealed partial class Room
 
     private static bool IsClientEventAllowed(byte code) =>
         code <= EventCode.MaxUserEvent
-        || code is EventCode.ObjectInstantiate or EventCode.ObjectDestroy or EventCode.Rpc or EventCode.StateSync;
+        || code is EventCode.ObjectInstantiate or EventCode.ObjectDestroy or EventCode.Rpc or EventCode.StateSync or EventCode.Message or EventCode.SyncVarSet;
 
     private async ValueTask HandleRaiseEventAsync(RoomRequestContext context, RoomActor actor, RaiseEventRequest request)
     {
@@ -219,7 +219,8 @@ public sealed partial class Room
         properties is not null
         && (properties.ContainsKey(RoomPropertyKeys.IsOpen)
             || properties.ContainsKey(RoomPropertyKeys.IsVisible)
-            || properties.ContainsKey(RoomPropertyKeys.MaxPlayers));
+            || properties.ContainsKey(RoomPropertyKeys.MaxPlayers)
+            || properties.ContainsKey(RoomPropertyKeys.Scene));
 
     private void HandleInterestGroups(RoomRequestContext context, RoomActor actor, ChangeInterestGroupsRequest request)
     {
