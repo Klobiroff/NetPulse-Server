@@ -34,7 +34,7 @@ Receive (other clients):
 
 Remote clients keep a buffer of timestamped snapshots and show the object at `ServerTime - delay`, blending between the two snapshots around that time. Snapshots that are older than the last one are discarded. After an ownership change the buffer is cleared.
 
-The automatic delay is `2 / max(1, min(Send Rate, Serialization Rate))` seconds. With the default `Serialization Rate` of `0` the formula evaluates to 2 seconds, which is a long lag. Set `Interpolation Delay` explicitly to about two send intervals: for example 0.13 s when the object is sent 15 times per second ([ticks and time](ticks-and-time.md#how-ticks-drive-sending)).
+The automatic delay is two state send intervals. The interval comes from `Send Rate`, `Serialization Rate` and the server tick rate, the same way the object is actually sent ([ticks and time](ticks-and-time.md#how-ticks-drive-sending)). With the defaults (`Send Rate` 20, `Serialization Rate` 0, a 30 Hz server tick) an object is sent every 2 ticks, so the delay is about 0.13 s. Set `Interpolation Delay` yourself only if you want a different trade-off between smoothness and lag.
 
 ## NetworkRigidbody
 
@@ -43,7 +43,7 @@ Synchronizes a `Rigidbody` and requires one on the same object. It always uses `
 | Option | Default | Meaning |
 |---|---|---|
 | Sync Velocity | on | Also send linear and angular velocity, which improves extrapolation |
-| Interpolation Delay | 0 | Seconds to render in the past. `0` means automatic: `2 / max(1, Serialization Rate)`, which is 2 seconds with the default `Serialization Rate` of `0`. Set a value of your own. |
+| Interpolation Delay | 0 | Seconds to render in the past. `0` means automatic, the same two send intervals as `NetworkTransform`. |
 | Teleport Distance | 5 | A gap larger than this snaps the body to the target. `0` disables it. |
 
 On the owner the body behaves normally. On other clients NetPulse makes it kinematic (clearing its velocity first) and moves it with `MovePosition` and `MoveRotation` in `FixedUpdate`, extrapolating up to a quarter of a second when snapshots run late. When ownership changes, the new owner gets back the `Is Kinematic` value the prefab had, and the old owner turns kinematic. Pair the component with a `Takeover` or `Request` [ownership mode](ownership.md) if players should be able to pick the object up and throw it.

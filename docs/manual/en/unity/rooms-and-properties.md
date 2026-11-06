@@ -98,7 +98,7 @@ Numbers convert between numeric types, so a key declared as `RoomKey<int>` reads
 
 ### Who may write
 
-Any member can write room properties and its own player properties. Writing another player's properties is allowed only to the master client. The reserved room keys `_isOpen`, `_isVisible`, `_maxPlayers` and `_scene` are master-only as well. `Set` applies the change locally before the server has answered and does not report a rejection; if the server refuses it, your local copy keeps the rejected value. When you need to know whether a write was accepted, use the compare-and-set form, which waits for the server.
+Any member can write room properties and its own player properties. Writing another player's properties is allowed only to the master client. The reserved room keys `_isOpen`, `_isVisible`, `_maxPlayers` and `_scene` are master-only as well. `Set` applies the change locally before the server has answered. If the server refuses it, NetPulse logs a warning and restores the previous value of every key that nobody has changed since, and `OnChanged` fires again with the restored value. `Set` does not tell you about the rejection in code. When you need to know whether a write was accepted, use the compare-and-set form, which waits for the server.
 
 Writing `null` removes a key. A typed `Set` cannot pass `null` for a value type, so remove with the raw API: `room.SetProperty("score", null)`.
 

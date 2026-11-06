@@ -50,7 +50,7 @@ Add every scene you load to `File > Build Settings`. If the scene cannot be load
 - Every client, the master included, loads the scene asynchronously with a single-mode `SceneManager.LoadSceneAsync`.
 - The returned operation completes on the master after the scene has loaded. On the other clients, `OnNetworkSceneLoaded` is the signal.
 
-If a second `LoadScene` starts before the first one finishes, the newer load wins. The operation of the older call is never completed, so avoid awaiting a `LoadScene` that another load may replace.
+If a second `LoadScene` starts before the first one finishes, the newer load wins and the older operation fails with `NetPulseReturnCode.Cancelled`. The same happens when the client leaves the room or disconnects during a load. Awaiting such an operation throws `NetPulseException`.
 
 ## Auto sync
 

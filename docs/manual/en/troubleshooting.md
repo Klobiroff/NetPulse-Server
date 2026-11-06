@@ -96,7 +96,7 @@ The log says "ignored a write to SyncVar". Only the owner may write an `Owner` v
 
 ### Remote objects move with a long delay
 
-`NetworkTransform` and `NetworkRigidbody` compute their automatic interpolation delay from `Serialization Rate`. With the default of `0` the delay comes to 2 seconds. Set `Interpolation Delay` on the component to a small value such as 0.1 to 0.15 seconds ([components](unity/components.md)).
+Package 0.3.0 computed the automatic interpolation delay of `NetworkTransform` and `NetworkRigidbody` as 2 seconds with the default settings. Update to 0.3.1, or set `Interpolation Delay` on the component to about 0.1 to 0.15 seconds. If the lag remains, check that `Interpolation Delay` is not set to a large value by hand ([components](unity/components.md)).
 
 ## Ownership
 
