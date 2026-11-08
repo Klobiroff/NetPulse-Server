@@ -1,17 +1,21 @@
 using LiteNetLib;
 using NetPulse.Common;
+using NetPulse.Common.Security;
 
 namespace NetPulse.TestClient;
 
-public sealed class LiteNetTransport : INetTransport, IDisposable
+public sealed class LiteNetTransport : ISecureNetTransport, IDisposable
 {
     private readonly EventBasedNetListener _listener = new();
-    private readonly NetManager _manager;
+    private readonly SecurityCounters _counters = new();
+    private NetManager? _manager;
+    private SecureClientCore? _core;
+    private SecureClientSettings? _security;
     private NetPeer? _peer;
+    private bool _raisedFailure;
 
     public LiteNetTransport()
     {
-        _manager = new NetManager(_listener) { AutoRecycle = true };
         _listener.PeerConnectedEvent += peer =>
         {
             _peer = peer;
@@ -20,6 +24,12 @@ public sealed class LiteNetTransport : INetTransport, IDisposable
         _listener.PeerDisconnectedEvent += (_, info) =>
         {
             _peer = null;
+
+            if (_raisedFailure)
+            {
+                return;
+            }
+
             var extra = info.AdditionalData.AvailableBytes > 0 ? System.Text.Encoding.UTF8.GetString(info.AdditionalData.GetRemainingBytes()) : string.Empty;
             Disconnected?.Invoke($"{info.Reason}:{extra}");
         };
@@ -37,8 +47,33 @@ public sealed class LiteNetTransport : INetTransport, IDisposable
 
     public int RoundTripTimeMs => _peer?.Ping * 2 ?? 0;
 
+    public SecurityCounters Counters => _counters;
+
+    public bool IsEncrypted => _core?.Session is not null;
+
+    public byte[]? HandshakeHash => _core?.HandshakeHash;
+
+    public void ConfigureSecurity(SecureClientSettings? settings) => _security = settings;
+
     public void Connect(string host, int port, string connectionKey)
     {
+        _raisedFailure = false;
+        _manager?.Stop();
+        _core?.Dispose();
+        _core = null;
+
+        if (_security is null)
+        {
+            _manager = new NetManager(_listener) { AutoRecycle = true };
+        }
+        else
+        {
+            _core = new SecureClientCore(_security, _counters, () => MonotonicClock.NowMs);
+            var layer = new SecureClientLayer(_core);
+            _manager = new NetManager(_listener, layer) { AutoRecycle = true };
+            layer.Attach(_manager);
+        }
+
         _manager.Start();
         _manager.Connect(host, port, connectionKey);
     }
@@ -46,11 +81,40 @@ public sealed class LiteNetTransport : INetTransport, IDisposable
     public void Send(ArraySegment<byte> data, DeliveryMode mode) =>
         _peer?.Send(data.Array!, data.Offset, data.Count, ToMethod(mode));
 
-    public void Poll() => _manager.PollEvents();
+    public void Poll()
+    {
+        _manager?.PollEvents();
 
-    public void Disconnect() => _manager.Stop();
+        if (_core is null || _raisedFailure)
+        {
+            return;
+        }
 
-    public void Dispose() => _manager.Stop();
+        var reason = _core.State switch
+        {
+            SecureClientState.Failed => SecureDisconnectReason.SecureHandshakeFailed,
+            _ when _core.CheckTimeout() => SecureDisconnectReason.SecureHandshakeTimeout,
+            _ when _core.Session is { IsClosed: true } => SecureDisconnectReason.SecureHandshakeFailed,
+            _ => null
+        };
+
+        if (reason is null)
+        {
+            return;
+        }
+
+        _raisedFailure = true;
+        _manager?.Stop();
+        Disconnected?.Invoke(reason);
+    }
+
+    public void Disconnect() => _manager?.Stop();
+
+    public void Dispose()
+    {
+        _manager?.Stop();
+        _core?.Dispose();
+    }
 
     private static DeliveryMethod ToMethod(DeliveryMode mode) => mode switch
     {

@@ -11,7 +11,7 @@ namespace NetPulse.Server.Rooms;
 
 public sealed record RoomSnapshot(RoomInfo Info, bool IsVisible);
 
-public sealed record RoomRequestContext(Peer Peer, byte OpCode, ushort RequestId);
+public sealed record RoomRequestContext(Peer Peer, byte OpCode, ushort RequestId, string? RejoinToken = null);
 
 public readonly record struct JoinOutcome(short Code, string? Message)
 {
@@ -44,6 +44,7 @@ public sealed class RoomServices
         TickRate = Math.Max(1, options.Value.TickRate);
         OwnershipRequestTimeoutMs = Math.Max(1, options.Value.OwnershipRequestTimeoutMs);
         Flood = new FloodGuard(loggerFactory.CreateLogger("NetPulse.Flood"), metrics, options.Value.PeerQueueLimit);
+        Limits = new LimitChecker(options.Value.Security);
     }
 
     public ILoggerFactory LoggerFactory { get; }
@@ -63,6 +64,8 @@ public sealed class RoomServices
     public int OwnershipRequestTimeoutMs { get; }
 
     public FloodGuard Flood { get; }
+
+    public LimitChecker Limits { get; }
 }
 
 public sealed class CachedEvent

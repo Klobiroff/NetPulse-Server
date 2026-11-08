@@ -2,7 +2,7 @@
 
 NetPulse is a networking solution for Unity games. It has two parts: a .NET 10 server that you host yourself, and a Unity package (`com.netpulse.unity`) that works with Unity 2021.3 through 6000.x. The model will be familiar if you have used Photon PUN: players connect, sit in a lobby, create or join rooms, share room and player properties, call RPCs and synchronize networked objects.
 
-Both parts are at version 0.3.
+Both parts are at version 0.4.
 
 ## What you get
 

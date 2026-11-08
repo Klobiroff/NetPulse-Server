@@ -33,6 +33,50 @@ The AppId is not a secret, because it ships inside your game. Use it to keep unr
 | `NetPulse:OwnershipRequestTimeoutMs` | `5000` | How long an ownership request for a `Request`-mode object waits for the owner to approve before it expires. Values below 1 are treated as 1. |
 | `NetPulse:ShutdownTimeoutMs` | `10000` | Time budget for closing all rooms when the server stops. |
 
+## Encryption
+
+Transport encryption lives under `NetPulse:Encryption`. The default `Disabled` installs nothing and leaves the wire format as it was. See [Security](security.md#transport-encryption) for what the modes mean and [Deployment](deployment.md#rotating-the-server-key) for rotating keys.
+
+| Key | Default | Effect |
+|---|---|---|
+| `NetPulse:Encryption:Mode` | `Disabled` | `Disabled`, `Optional` (plain and encrypted clients) or `Required` (encrypted clients only). With `Optional` or `Required` the server refuses to start without a valid private key. |
+| `NetPulse:Encryption:PrivateKeyFile` | empty | File with the Base64 private key made by `NetPulse.Server keygen`. A relative path is resolved against the folder of the server binary. Use this or the variable `NETPULSE_SERVER_PRIVATE_KEY`, not both. |
+| `NetPulse:Encryption:PreviousPrivateKeyFiles` | empty list | Retired private keys that are still accepted, so clients that pin an older public key keep working during a rotation. |
+| `NetPulse:Encryption:PreSharedKey` | empty | Optional Base64 key (32 bytes) that every client must also have. |
+| `NetPulse:Encryption:PreSharedKeyFile` | empty | Same, read from a file. Set at most one of the two. |
+| `NetPulse:Encryption:RequireCookie` | `true` | Make a client echo a cookie before the server does any key agreement. Turn it off only on a private network, it removes the protection against spoofed senders. |
+| `NetPulse:Encryption:CookieLifetimeMs` | `30000` | How often the cookie secret changes (the previous one is also accepted). At least 1000. |
+| `NetPulse:Encryption:RekeyAfterPackets` | `1000000` | Replace the sending key after this many packets. `0` turns the packet trigger off. |
+| `NetPulse:Encryption:RekeyAfterMs` | `600000` | Replace the sending key after this long. `0` turns the time trigger off. |
+| `NetPulse:Encryption:ReplayWindow` | `4096` | Size of the replay window, in packets. A multiple of 64 from 64 to 65536. |
+| `NetPulse:Encryption:SessionIdleTimeoutMs` | `30000` | A session with no valid packet for this long is removed and its peer disconnected. At least 1000. |
+| `NetPulse:Encryption:ReplaceIdleMs` | `3000` | How long a session must be silent before a new handshake from the same address may replace it. |
+| `NetPulse:Encryption:HandshakeTimeoutMs` | `5000` | How long a half-finished handshake is kept. At least 500. |
+| `NetPulse:Encryption:PaddingBlock` | `0` | Pad every outgoing record to a multiple of this many bytes. `0` is off, otherwise 16 to 512. |
+
+## Limits
+
+The `NetPulse:Security` section holds the abuse limits. `0` turns a limit off. The meaning of each key, its default and what happens on a violation are in the table under [Security](security.md#limits-for-connected-clients).
+
+| Key | Default |
+|---|---|
+| `MaxConnectionsPerIp` | `32` |
+| `ConnectionAttemptsPerIpPerSecond` | `20` |
+| `HandshakesPerIpPerSecond` | `10` |
+| `MaxHandshakesPerSecond` | `2000` |
+| `AuthDeadlineMs` | `10000` |
+| `MaxAuthAttempts` | `5` |
+| `MaxMessagesPerSecond` / `MessageBurst` | `1000` / `2000` |
+| `MaxBytesPerSecond` / `ByteBurst` | `1048576` / `2097152` |
+| `MaxMessageBytes` | `262144` |
+| `MaxUserIdLength` / `MaxNickNameLength` / `MaxAuthTokenLength` | `128` / `64` / `8192` |
+| `MaxRoomNameLength` | `128` |
+| `MaxPropertiesPerRoom` / `MaxPropertyBytes` | `256` / `16384` |
+| `MaxCachedEventsPerRoom` / `MaxTargetActors` | `4096` / `256` |
+| `RequireRejoinToken` | `false` |
+
+A negative value stops the server from starting.
+
 ## Console
 
 | Key | Default | Effect |
@@ -96,6 +140,17 @@ Logging uses the standard `Logging` section and writes single-line messages to t
     "RoomQueueCapacity": 4096,
     "OwnershipRequestTimeoutMs": 5000,
     "ShutdownTimeoutMs": 10000,
+    "Encryption": {
+      "Mode": "Required",
+      "PrivateKeyFile": "server.key",
+      "PaddingBlock": 0
+    },
+    "Security": {
+      "MaxConnectionsPerIp": 32,
+      "MaxMessagesPerSecond": 1000,
+      "MaxMessageBytes": 262144,
+      "RequireRejoinToken": false
+    },
     "EnableConsole": false,
     "Plugins": {
       "Directory": "plugins",

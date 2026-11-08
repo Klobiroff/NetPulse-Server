@@ -28,6 +28,10 @@ public sealed class RoomActor : IActor
 
     public bool IsInactive { get; set; }
 
+    public string? RejoinToken { get; set; }
+
+    public bool IsEncrypted => Peer?.IsEncrypted ?? false;
+
     public bool IsMasterClient => _room.MasterClientId == ActorId;
 
     public Peer? Peer { get; set; }

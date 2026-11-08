@@ -18,8 +18,28 @@ The client got no answer from the server. Check, in this order:
 | Code | Cause | Fix |
 |---|---|---|
 | `InvalidAppId` (-31) | The server has an `AppId` configured and yours differs | Set the same `App Id` in the settings |
-| `VersionMismatch` (-30) | Client and server speak different protocol versions | Update the package or the server so both are 0.3 |
+| `VersionMismatch` (-30) | Client and server speak different protocol versions | Update the package or the server so both are 0.4 |
 | `AuthenticationFailed` (-32) | The auth plugin rejected the token | Set `Pulse.AuthToken` before `Connect()`, and check the plugin ([authentication](plugins/authentication.md)) |
+
+### Connect fails with SecureHandshakeTimeout or SecureHandshakeFailed
+
+These appear only when `Encryption Mode` is `Required`. The server answers a bad handshake with nothing on purpose, so a wrong key looks like a timeout. Check, in this order:
+
+1. The server runs with `NetPulse:Encryption:Mode` set to `Optional` or `Required`. Against a server in `Disabled` mode an encrypting client always times out.
+2. `Server Public Keys` holds the key printed by `NetPulse.Server keygen` for the private key the server really uses (the server logs its public key at startup). After a server key rotation, ship a build that lists the new key.
+3. The pre-shared key is set on both sides or on neither, with the same value.
+4. The server's `Encryption:HandshakeTimeoutMs` is not shorter than the time the first packets need to travel.
+5. Nothing in between drops or rewrites UDP packets (a firewall that inspects them, a proxy).
+
+`SecureHandshakeFailed` means that answers arrived but could not be verified, or that the session reached its counter limit. Reconnecting starts a new session.
+
+### Connect fails with InvalidConfiguration (-104)
+
+`Encryption Mode` is `Required` but there is no valid key: `Server Public Keys` is empty or a key is not a Base64 string of 32 bytes. The Unity console shows which one. `Project Settings > NetPulse` and the Hub show the same message.
+
+### The server disconnects the client with RateLimited, AuthTimeout or TooManyAuthAttempts
+
+The client broke a limit in `NetPulse:Security`: too many messages or bytes per second, a message larger than `MaxMessageBytes`, no authentication within `AuthDeadlineMs`, or more than `MaxAuthAttempts` failed authentications. Send less often, split large payloads, or raise the limit on the server. See [Security](server/security.md#limits-for-connected-clients).
 
 ### "Cannot connect while ..." or InvalidState
 

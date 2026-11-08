@@ -94,6 +94,7 @@ public sealed class LobbyService : IRoomDirectory, IAsyncDisposable
             switch (request.OpCode)
             {
                 case OpCode.JoinLobby:
+                    FlushDeltas();
                     _subscribers.Add(peer);
                     peer.InLobby = true;
                     peer.SendResponse(request.OpCode, request.RequestId, ReturnCode.Ok);
@@ -175,6 +176,12 @@ public sealed class LobbyService : IRoomDirectory, IAsyncDisposable
     private Task<JoinOutcome> HandleCreateAsync(RoomRequestContext context, CreateRoomRequest data)
     {
         var name = string.IsNullOrWhiteSpace(data.RoomName) ? NewRoomName() : data.RoomName;
+        var rejected = CheckRequest(name, data.Options, data.PlayerProperties);
+
+        if (rejected is not null)
+        {
+            return Task.FromResult(rejected.Value);
+        }
 
         if (_rooms.ContainsKey(name))
         {
@@ -186,6 +193,15 @@ public sealed class LobbyService : IRoomDirectory, IAsyncDisposable
 
     private Task<JoinOutcome> HandleJoinAsync(RoomRequestContext context, JoinRoomRequest data)
     {
+        var rejected = CheckRequest(data.RoomName, null, data.PlayerProperties);
+
+        if (rejected is not null)
+        {
+            return Task.FromResult(rejected.Value);
+        }
+
+        context = context with { RejoinToken = data.RejoinToken };
+
         if (data.RoomName is null || !_rooms.TryGetValue(data.RoomName, out var entry))
         {
             return Task.FromResult(new JoinOutcome(ReturnCode.RoomNotFound, "Room not found"));
@@ -197,6 +213,14 @@ public sealed class LobbyService : IRoomDirectory, IAsyncDisposable
     private Task<JoinOutcome> HandleJoinOrCreateAsync(RoomRequestContext context, JoinOrCreateRoomRequest data)
     {
         var name = string.IsNullOrWhiteSpace(data.RoomName) ? NewRoomName() : data.RoomName;
+        var rejected = CheckRequest(name, data.Options, data.PlayerProperties);
+
+        if (rejected is not null)
+        {
+            return Task.FromResult(rejected.Value);
+        }
+
+        context = context with { RejoinToken = data.RejoinToken };
 
         return _rooms.TryGetValue(name, out var entry)
             ? entry.Room.JoinAsync(context, data.PlayerProperties)
@@ -205,6 +229,13 @@ public sealed class LobbyService : IRoomDirectory, IAsyncDisposable
 
     private async Task<JoinOutcome> HandleJoinRandomAsync(RoomRequestContext context, JoinRandomRequest data)
     {
+        var rejected = CheckRequest(null, data.CreateOptions, data.PlayerProperties);
+
+        if (rejected is not null)
+        {
+            return rejected.Value;
+        }
+
         var candidates = _rooms.Values
             .Where(e => e.Snapshot.IsVisible && e.Snapshot.Info.IsOpen && !IsFull(e.Snapshot.Info))
             .Where(e => data.ExpectedMaxPlayers == 0 || e.Snapshot.Info.MaxPlayers == data.ExpectedMaxPlayers)
@@ -235,8 +266,22 @@ public sealed class LobbyService : IRoomDirectory, IAsyncDisposable
         var room = new Room(name, requested ?? new RoomOptions(), _services, this);
         _rooms[name] = new RoomEntry(room, room.InitialSnapshot());
         _removed.Remove(name);
-        _logger.LogInformation("Creating room {Room} for {User}", name, context.Peer.UserId);
+        _logger.LogInformation("Creating room {Room} for {User}", LogText.Clean(name), LogText.Clean(context.Peer.UserId));
         return room.CreateAsync(context, playerProperties);
+    }
+
+    private JoinOutcome? CheckRequest(string? roomName, RoomOptions? options, PropertyTable? playerProperties)
+    {
+        var limits = _services.Limits;
+        var message = limits.CheckRoomName(roomName) ?? limits.CheckRoomOptions(options) ?? limits.CheckProperties(playerProperties, null);
+
+        if (message is null)
+        {
+            return null;
+        }
+
+        _services.Metrics.LimitViolated();
+        return new JoinOutcome(ReturnCode.InvalidRequest, message);
     }
 
     private static bool IsFull(RoomInfo info) => info.MaxPlayers > 0 && info.PlayerCount >= info.MaxPlayers;

@@ -16,6 +16,8 @@ public interface IActor
     bool IsInactive { get; }
 
     bool IsMasterClient { get; }
+
+    bool IsEncrypted { get; }
 }
 
 public interface IPluginHost

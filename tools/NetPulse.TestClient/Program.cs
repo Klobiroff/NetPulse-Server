@@ -1,4 +1,5 @@
 using NetPulse.Common;
+using NetPulse.Common.Security;
 using NetPulse.TestClient;
 
 var options = BotOptions.Parse(args);
@@ -18,7 +19,7 @@ if (options.MakeToken)
 
 if (options.ShowHelp)
 {
-    Console.WriteLine("NetPulse.TestClient --host 127.0.0.1 --port 5055 --bots 2 --room test --plugin NetPulse.Plugins.Sample --seconds 6 [--app-id ID] [--key ConnectionKey] [--token T] | --make-token --secret S [--user U] [--nick N] [--ttl-minutes 60]");
+    Console.WriteLine("NetPulse.TestClient --host 127.0.0.1 --port 5055 --bots 2 --room test --plugin NetPulse.Plugins.Sample --seconds 6 [--app-id ID] [--key ConnectionKey] [--token T] [--encrypt --server-public-key BASE64 [--psk BASE64] [--padding N]] | --make-token --secret S [--user U] [--nick N] [--ttl-minutes 60]");
     return 0;
 }
 
@@ -29,14 +30,14 @@ try
 {
     for (var i = 0; i < options.Bots; i++)
     {
-        var bot = new BotClient($"bot{i + 1}");
+        var bot = new BotClient($"bot{i + 1}", options.BuildSecurity());
         bots.Add(bot);
         await bot.ConnectAsync(options.Host, options.Port, options.ConnectionKey);
         var auth = await bot.AuthenticateAsync(appId: options.AppId, authToken: options.AuthToken);
         Check(auth.ReturnCode == ReturnCode.Ok, $"{bot.Name}: authenticate failed ({auth.ReturnCode} {auth.DebugMessage})");
         var join = await bot.JoinOrCreateRoomAsync(options.Room, new RoomOptions { MaxPlayers = (byte)Math.Max(options.Bots, 2), Plugin = options.Plugin });
         Check(join.ReturnCode == ReturnCode.Ok, $"{bot.Name}: join failed ({join.ReturnCode} {join.DebugMessage})");
-        Console.WriteLine($"{bot.Name} joined '{options.Room}' as actor {bot.ActorId}, master {bot.MasterClientId}");
+        Console.WriteLine($"{bot.Name} joined '{options.Room}' as actor {bot.ActorId}, master {bot.MasterClientId}, encrypted {bot.IsEncrypted}");
     }
 
     var end = DateTime.UtcNow.AddSeconds(options.Seconds);
@@ -125,6 +126,14 @@ public sealed class BotOptions
 
     public string ConnectionKey { get; private set; } = Protocol.DefaultConnectionKey;
 
+    public bool Encrypt { get; private set; }
+
+    public string ServerPublicKey { get; private set; } = string.Empty;
+
+    public string PreSharedKey { get; private set; } = string.Empty;
+
+    public int Padding { get; private set; }
+
     public bool ShowHelp { get; private set; }
 
     public bool MakeToken { get; private set; }
@@ -136,6 +145,29 @@ public sealed class BotOptions
     public string NickName { get; private set; } = "Player";
 
     public int TtlMinutes { get; private set; } = 60;
+
+    public SecureClientSettings? BuildSecurity()
+    {
+        if (!Encrypt)
+        {
+            return null;
+        }
+
+        if (!SecurityKeyText.TryParseKey(ServerPublicKey, out var serverKey))
+        {
+            throw new ArgumentException("--encrypt requires --server-public-key with a Base64 32-byte key");
+        }
+
+        var settings = new SecureClientSettings { ServerPublicKeys = new List<byte[]> { serverKey } };
+        settings.Session.PaddingBlock = Padding;
+
+        if (PreSharedKey.Length > 0)
+        {
+            settings.PreSharedKey = SecurityKeyText.TryParseKey(PreSharedKey, out var psk) ? psk : throw new ArgumentException("--psk must be a Base64 32-byte key");
+        }
+
+        return settings;
+    }
 
     public static BotOptions Parse(string[] args)
     {
@@ -181,6 +213,21 @@ public sealed class BotOptions
                     break;
                 case "--key":
                     result.ConnectionKey = value;
+                    i++;
+                    break;
+                case "--encrypt":
+                    result.Encrypt = true;
+                    break;
+                case "--server-public-key":
+                    result.ServerPublicKey = value;
+                    i++;
+                    break;
+                case "--psk":
+                    result.PreSharedKey = value;
+                    i++;
+                    break;
+                case "--padding":
+                    result.Padding = int.Parse(value);
                     i++;
                     break;
                 case "--make-token":

@@ -90,6 +90,15 @@ public sealed partial class Room
             return;
         }
 
+        var violation = _services.Limits.CheckEvent(request, _cache.Count);
+
+        if (violation is not null)
+        {
+            _services.Metrics.LimitViolated();
+            Respond(context, ReturnCode.InvalidRequest, violation);
+            return;
+        }
+
         if (!ValidateObjectEvent(context, actor, request))
         {
             return;
@@ -174,6 +183,15 @@ public sealed partial class Room
         }
 
         var table = target?.Properties ?? _properties;
+
+        var propertyViolation = _services.Limits.CheckProperties(before.Properties, table);
+
+        if (propertyViolation is not null)
+        {
+            _services.Metrics.LimitViolated();
+            Respond(context, ReturnCode.InvalidRequest, propertyViolation);
+            return;
+        }
 
         if (!table.Matches(before.ExpectedProperties))
         {

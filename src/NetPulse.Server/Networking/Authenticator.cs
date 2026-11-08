@@ -14,10 +14,14 @@ public sealed class Authenticator
     private readonly PluginManager _plugins;
     private readonly ServerClock _clock;
     private readonly ILogger<Authenticator> _logger;
+    private readonly ServerMetrics _metrics;
+    private readonly SecurityOptions _limits;
 
-    public Authenticator(IOptions<NetPulseOptions> options, PluginManager plugins, ServerClock clock, ILogger<Authenticator> logger)
+    public Authenticator(IOptions<NetPulseOptions> options, PluginManager plugins, ServerClock clock, ServerMetrics metrics, ILogger<Authenticator> logger)
     {
         _options = options.Value;
+        _limits = _options.Security;
+        _metrics = metrics;
         _plugins = plugins;
         _clock = clock;
         _logger = logger;
@@ -34,6 +38,24 @@ public sealed class Authenticator
             if (peer.Authenticated)
             {
                 Respond(peer, request, ReturnCode.Ok, null);
+                return;
+            }
+
+            if (_limits.MaxAuthAttempts > 0 && peer.NextAuthAttempt() > _limits.MaxAuthAttempts)
+            {
+                _metrics.LimitViolated();
+                _logger.LogWarning("Disconnecting peer {Peer}: too many authentication attempts", peer.Id);
+                Respond(peer, request, ReturnCode.AuthenticationFailed, "Too many authentication attempts");
+                await DisconnectAsync(peer, "TooManyAuthAttempts");
+                return;
+            }
+
+            var invalid = Validate(data);
+
+            if (invalid is not null)
+            {
+                _metrics.LimitViolated();
+                Respond(peer, request, ReturnCode.InvalidRequest, invalid);
                 return;
             }
 
@@ -67,7 +89,9 @@ public sealed class Authenticator
                             NickName = data.NickName,
                             AuthToken = data.AuthToken,
                             AuthData = data.AuthData,
-                            RemoteEndpoint = peer.Endpoint
+                            RemoteEndpoint = peer.Endpoint,
+                            IsEncrypted = peer.IsEncrypted,
+                            ChannelBinding = peer.ChannelBinding
                         },
                         cts.Token).WaitAsync(timeout).ConfigureAwait(false);
                 }
@@ -110,11 +134,33 @@ public sealed class Authenticator
         }
     }
 
-    private static async Task DisconnectAsync(Peer peer)
+    private static async Task DisconnectAsync(Peer peer, string reason = "AuthenticationFailed")
     {
         await Task.Delay(250).ConfigureAwait(false);
-        peer.Disconnect("AuthenticationFailed");
+        peer.Disconnect(reason);
     }
+
+    private string? Validate(AuthenticateRequest data)
+    {
+        if (Exceeds(data.UserId, _limits.MaxUserIdLength))
+        {
+            return "UserId is too long";
+        }
+
+        if (Exceeds(data.NickName, _limits.MaxNickNameLength))
+        {
+            return "NickName is too long";
+        }
+
+        if (Exceeds(data.AuthToken, _limits.MaxAuthTokenLength))
+        {
+            return "AuthToken is too long";
+        }
+
+        return LogText.ContainsControl(data.UserId) || LogText.ContainsControl(data.NickName) ? "UserId and NickName must not contain control characters" : null;
+    }
+
+    private static bool Exceeds(string? value, int limit) => limit > 0 && value is not null && value.Length > limit;
 
     private static void Respond(Peer peer, OperationRequest request, short code, string? message) =>
         peer.SendResponse(request.OpCode, request.RequestId, code, message);

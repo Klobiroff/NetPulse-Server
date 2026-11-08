@@ -33,6 +33,50 @@ AppId не является секретом, потому что поставл
 | `NetPulse:OwnershipRequestTimeoutMs` | `5000` | Сколько запрос владения для объекта в режиме `Request` ждёт одобрения владельца, прежде чем истечь. Значения меньше 1 считаются равными 1. |
 | `NetPulse:ShutdownTimeoutMs` | `10000` | Бюджет времени на закрытие всех комнат при остановке сервера. |
 
+## Шифрование {#encryption}
+
+Шифрование транспорта настраивается в `NetPulse:Encryption`. Значение по умолчанию `Disabled` ничего не устанавливает и оставляет формат на проводе прежним. Что означают режимы — в разделе [Безопасность](security.md#transport-encryption), как менять ключи — в разделе [Развёртывание](deployment.md#rotating-the-server-key).
+
+| Ключ | По умолчанию | Действие |
+|---|---|---|
+| `NetPulse:Encryption:Mode` | `Disabled` | `Disabled`, `Optional` (открытые и шифрованные клиенты) или `Required` (только шифрованные). При `Optional` и `Required` сервер не запустится без корректного приватного ключа. |
+| `NetPulse:Encryption:PrivateKeyFile` | пусто | Файл с приватным ключом в Base64, созданный командой `NetPulse.Server keygen`. Относительный путь считается от папки с бинарником сервера. Используйте его или переменную `NETPULSE_SERVER_PRIVATE_KEY`, но не оба сразу. |
+| `NetPulse:Encryption:PreviousPrivateKeyFiles` | пустой список | Выведенные из обращения приватные ключи, которые ещё принимаются, чтобы клиенты с закреплённым старым публичным ключом работали во время ротации. |
+| `NetPulse:Encryption:PreSharedKey` | пусто | Необязательный ключ в Base64 (32 байта), который должен быть и у каждого клиента. |
+| `NetPulse:Encryption:PreSharedKeyFile` | пусто | То же, но из файла. Задавайте не больше одного из двух. |
+| `NetPulse:Encryption:RequireCookie` | `true` | Требовать от клиента вернуть cookie, прежде чем сервер начнёт обмен ключами. Отключайте только в закрытой сети: без этого пропадает защита от подмены отправителя. |
+| `NetPulse:Encryption:CookieLifetimeMs` | `30000` | Как часто меняется секрет cookie (предыдущий тоже принимается). Не меньше 1000. |
+| `NetPulse:Encryption:RekeyAfterPackets` | `1000000` | Менять ключ отправки после стольких пакетов. `0` выключает условие по пакетам. |
+| `NetPulse:Encryption:RekeyAfterMs` | `600000` | Менять ключ отправки по прошествии стольких миллисекунд. `0` выключает условие по времени. |
+| `NetPulse:Encryption:ReplayWindow` | `4096` | Размер окна защиты от повтора в пакетах. Кратно 64, от 64 до 65536. |
+| `NetPulse:Encryption:SessionIdleTimeoutMs` | `30000` | Сессия, в которой столько времени не было корректных пакетов, удаляется, а её пир отключается. Не меньше 1000. |
+| `NetPulse:Encryption:ReplaceIdleMs` | `3000` | Сколько сессия должна молчать, чтобы новое рукопожатие с того же адреса могло её заменить. |
+| `NetPulse:Encryption:HandshakeTimeoutMs` | `5000` | Сколько хранится незавершённое рукопожатие. Не меньше 500. |
+| `NetPulse:Encryption:PaddingBlock` | `0` | Дополнять каждую исходящую запись до кратной этому числу байтов длины. `0` — выключено, иначе от 16 до 512. |
+
+## Лимиты {#limits}
+
+Секция `NetPulse:Security` содержит лимиты против злоупотреблений. `0` выключает лимит. Смысл каждого ключа, значение по умолчанию и последствия нарушения указаны в таблице раздела [Безопасность](security.md#limits-for-connected-clients).
+
+| Ключ | По умолчанию |
+|---|---|
+| `MaxConnectionsPerIp` | `32` |
+| `ConnectionAttemptsPerIpPerSecond` | `20` |
+| `HandshakesPerIpPerSecond` | `10` |
+| `MaxHandshakesPerSecond` | `2000` |
+| `AuthDeadlineMs` | `10000` |
+| `MaxAuthAttempts` | `5` |
+| `MaxMessagesPerSecond` / `MessageBurst` | `1000` / `2000` |
+| `MaxBytesPerSecond` / `ByteBurst` | `1048576` / `2097152` |
+| `MaxMessageBytes` | `262144` |
+| `MaxUserIdLength` / `MaxNickNameLength` / `MaxAuthTokenLength` | `128` / `64` / `8192` |
+| `MaxRoomNameLength` | `128` |
+| `MaxPropertiesPerRoom` / `MaxPropertyBytes` | `256` / `16384` |
+| `MaxCachedEventsPerRoom` / `MaxTargetActors` | `4096` / `256` |
+| `RequireRejoinToken` | `false` |
+
+Отрицательное значение не даст серверу запуститься.
+
 ## Консоль
 
 | Ключ | По умолчанию | Действие |
@@ -96,6 +140,17 @@ AppId не является секретом, потому что поставл
     "RoomQueueCapacity": 4096,
     "OwnershipRequestTimeoutMs": 5000,
     "ShutdownTimeoutMs": 10000,
+    "Encryption": {
+      "Mode": "Required",
+      "PrivateKeyFile": "server.key",
+      "PaddingBlock": 0
+    },
+    "Security": {
+      "MaxConnectionsPerIp": 32,
+      "MaxMessagesPerSecond": 1000,
+      "MaxMessageBytes": 262144,
+      "RequireRejoinToken": false
+    },
     "EnableConsole": false,
     "Plugins": {
       "Directory": "plugins",

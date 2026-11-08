@@ -18,6 +18,19 @@ Create the asset with `NetPulse > Create Settings Asset`, with the button in `Pr
 | App Version | `1.0` | Your build's version string. It is sent to the server, which does not check it. |
 | Connection Key | `NetPulse` | Shared secret of the UDP handshake. It has to equal the server's `ConnectionKey`. |
 
+### Security
+
+| Field | Default | Meaning |
+|---|---|---|
+| Encryption Mode | `Off` | `Off` sends plain packets. `Required` encrypts everything and refuses plain packets, see [Connecting](connecting.md#encryption). |
+| Server Public Keys | empty | One or more Base64 public keys printed by `NetPulse.Server keygen`. The inspector and the Hub check the format. Several keys are only for rotating the server key. |
+| Pre Shared Key | empty | Optional Base64 key (32 bytes) that the server also has. It ships in the build and can be extracted. |
+| Rekey After Packets | `1000000` | Replace the sending key after this many packets (`0` = never by count) |
+| Rekey After Ms | `600000` | Replace the sending key after this long (`0` = never by time) |
+| Replay Window | `4096` | Packets remembered for replay protection. A multiple of 64, 64 to 65536. |
+| Padding Block | `0` | `0` is off, otherwise 16 to 512. Pads every packet to a multiple of this size. Use the same value as the server. |
+| Handshake Timeout | `5` (at least 0.5) | Seconds to wait for the secure handshake before the connection fails with `SecureHandshakeTimeout` |
+
 ### Player
 
 | Field | Default | Meaning |
@@ -58,6 +71,7 @@ In code the same values are properties of `NetPulseSettings`, for example `setti
 The `Overview` tab shows:
 
 - Connection: state, online or offline mode, ping, server time, user id and nickname. In Play Mode there are `Connect` and `Disconnect` buttons.
+- Security: the encryption mode, the number of pinned server keys, any problem with the key format, and in Play Mode whether the session is encrypted.
 - Room: name, player count against the limit, the open and visible flags, the number of network objects and the player list, with markers for yourself, the master and inactive players.
 - Traffic: messages and kilobytes sent and received, with the current kilobytes per second.
 - Prefab registry: how many prefabs are registered, and a `Rebuild Prefab Registry` button.
