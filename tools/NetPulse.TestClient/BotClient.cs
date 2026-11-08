@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using NetPulse.Common;
+using NetPulse.Common.Security;
 
 namespace NetPulse.TestClient;
 
@@ -15,9 +16,10 @@ public sealed class BotClient : IDisposable
     private Task? _pollTask;
     private int _nextRequestId;
 
-    public BotClient(string name)
+    public BotClient(string name, SecureClientSettings? security = null)
     {
         Name = name;
+        _transport.ConfigureSecurity(security);
         _transport.Connected += () => _connected.TrySetResult();
         _transport.Disconnected += reason =>
         {
@@ -42,6 +44,14 @@ public sealed class BotClient : IDisposable
     public long ServerTimeMs { get; private set; }
 
     public bool IsConnected => _transport.IsConnected;
+
+    public bool IsEncrypted => _transport.IsEncrypted;
+
+    public SecurityCounters SecurityCounters => _transport.Counters;
+
+    public byte[]? HandshakeHash => _transport.HandshakeHash;
+
+    public string? RejoinToken { get; private set; }
 
     public PropertyTable RoomProperties { get; private set; } = new();
 
@@ -85,10 +95,10 @@ public sealed class BotClient : IDisposable
         JoinAsync(OpCode.CreateRoom, new CreateRoomRequest { RoomName = name, Options = options }.ToParameters());
 
     public Task<OperationResponse> JoinRoomAsync(string name) =>
-        JoinAsync(OpCode.JoinRoom, new JoinRoomRequest { RoomName = name }.ToParameters());
+        JoinAsync(OpCode.JoinRoom, new JoinRoomRequest { RoomName = name, RejoinToken = RejoinToken }.ToParameters());
 
     public Task<OperationResponse> JoinOrCreateRoomAsync(string name, RoomOptions? options = null) =>
-        JoinAsync(OpCode.JoinOrCreateRoom, new JoinOrCreateRoomRequest { RoomName = name, Options = options }.ToParameters());
+        JoinAsync(OpCode.JoinOrCreateRoom, new JoinOrCreateRoomRequest { RoomName = name, Options = options, RejoinToken = RejoinToken }.ToParameters());
 
     public Task<OperationResponse> JoinRandomAsync(PropertyTable? filter = null, RoomOptions? createOptions = null) =>
         JoinAsync(OpCode.JoinRandomRoom, new JoinRandomRequest { ExpectedProperties = filter, CreateOptions = createOptions }.ToParameters());
@@ -238,6 +248,7 @@ public sealed class BotClient : IDisposable
             ActorId = joined.LocalActorId;
             MasterClientId = joined.MasterClientId;
             RoomProperties = joined.RoomProperties;
+            RejoinToken = joined.RejoinToken;
         }
 
         return response;

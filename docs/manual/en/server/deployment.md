@@ -73,6 +73,47 @@ Clients connect over UDP to `NetPulse:Port` (5055 by default). Allow inbound UDP
     New-NetFirewallRule -DisplayName "NetPulse" -Direction Inbound -Protocol UDP -LocalPort 5055 -Action Allow
     ```
 
+## Keys for encryption
+
+Create the server key on the machine that runs the server, outside the publish folder if you can, so that a redeploy never overwrites it:
+
+```bash
+./NetPulse.Server keygen --out /etc/netpulse/server.key
+```
+
+The command prints the public key. Copy it into the Unity settings. Then set the mode and the path, for example with environment variables:
+
+```text
+NetPulse__Encryption__Mode=Required
+NetPulse__Encryption__PrivateKeyFile=/etc/netpulse/server.key
+```
+
+On Linux the file is created readable by its owner only. On Windows, keep it in a folder that only the service account can read. Alternatively give the key in `NETPULSE_SERVER_PRIVATE_KEY` (a secret store or the service manager can inject it), and leave `PrivateKeyFile` empty. The server will not start if both are set, if neither is set, or if the value is not a Base64 key of 32 bytes.
+
+Back the private key up. If you lose it, every client build that pins the matching public key stops working until you ship a new build.
+
+### Rotating the server key
+
+The public key is compiled into the clients, so a new key has to reach players before the old one stops working. The client can pin several public keys, and the server can accept several private keys. A rotation in three steps:
+
+1. Run `NetPulse.Server keygen --out server-2.key` to make the new key.
+2. Ship a client build that lists both public keys (old first or last does not matter, the client tries them in turn). Keep the old key working on the server: make the new file the current key and put the old file into the list of retired keys.
+
+    ```json
+    {
+      "NetPulse": {
+        "Encryption": {
+          "PrivateKeyFile": "server-2.key",
+          "PreviousPrivateKeyFiles": [ "server.key" ]
+        }
+      }
+    }
+    ```
+
+3. When the players have moved to the new build, remove `server.key` from `PreviousPrivateKeyFiles`. Builds that still pin only the old key can no longer connect.
+
+The server tells the keys apart by a 4-byte id inside the first handshake message. A client whose key the server does not know gets no reply and reports `SecureHandshakeTimeout`.
+
 ## Plugin folder layout
 
 The server scans `NetPulse:Plugins:Directory` (the `plugins` folder next to the binary by default). Each subfolder is one plugin and needs a `plugin.json`:

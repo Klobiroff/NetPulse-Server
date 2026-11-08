@@ -31,18 +31,22 @@ namespace NetPulse.Common
 
         public PropertyTable PlayerProperties { get; set; }
 
+        public string RejoinToken { get; set; }
+
         public ParameterDictionary ToParameters() => new()
         {
             [ParamKey.RoomName] = RoomName,
             [ParamKey.Options] = Options?.ToParameters(),
-            [ParamKey.PlayerProperties] = PlayerProperties
+            [ParamKey.PlayerProperties] = PlayerProperties,
+            [ParamKey.RejoinToken] = RejoinToken
         };
 
         public static JoinOrCreateRoomRequest FromParameters(ParameterDictionary parameters) => new()
         {
             RoomName = parameters.Get<string>(ParamKey.RoomName),
             Options = RoomOptions.FromParameters(parameters.Get<ParameterDictionary>(ParamKey.Options)),
-            PlayerProperties = parameters.Get<PropertyTable>(ParamKey.PlayerProperties)
+            PlayerProperties = parameters.Get<PropertyTable>(ParamKey.PlayerProperties),
+            RejoinToken = parameters.Get<string>(ParamKey.RejoinToken)
         };
     }
 
@@ -52,16 +56,20 @@ namespace NetPulse.Common
 
         public PropertyTable PlayerProperties { get; set; }
 
+        public string RejoinToken { get; set; }
+
         public ParameterDictionary ToParameters() => new()
         {
             [ParamKey.RoomName] = RoomName,
-            [ParamKey.PlayerProperties] = PlayerProperties
+            [ParamKey.PlayerProperties] = PlayerProperties,
+            [ParamKey.RejoinToken] = RejoinToken
         };
 
         public static JoinRoomRequest FromParameters(ParameterDictionary parameters) => new()
         {
             RoomName = parameters.Get<string>(ParamKey.RoomName),
-            PlayerProperties = parameters.Get<PropertyTable>(ParamKey.PlayerProperties)
+            PlayerProperties = parameters.Get<PropertyTable>(ParamKey.PlayerProperties),
+            RejoinToken = parameters.Get<string>(ParamKey.RejoinToken)
         };
     }
 
@@ -116,6 +124,8 @@ namespace NetPulse.Common
 
         public int TickRate { get; set; }
 
+        public string RejoinToken { get; set; }
+
         public ParameterDictionary ToParameters() => new()
         {
             [ParamKey.RoomName] = RoomName,
@@ -128,7 +138,8 @@ namespace NetPulse.Common
             [ParamKey.IsOpen] = IsOpen,
             [ParamKey.IsVisible] = IsVisible,
             [ParamKey.IsRejoin] = IsRejoin,
-            [ParamKey.TickRate] = TickRate
+            [ParamKey.TickRate] = TickRate,
+            [ParamKey.RejoinToken] = RejoinToken
         };
 
         public static JoinRoomResponse FromParameters(ParameterDictionary parameters) => new()
@@ -143,7 +154,8 @@ namespace NetPulse.Common
             IsOpen = parameters.Get(ParamKey.IsOpen, true),
             IsVisible = parameters.Get(ParamKey.IsVisible, true),
             IsRejoin = parameters.Get<bool>(ParamKey.IsRejoin),
-            TickRate = parameters.Get<int>(ParamKey.TickRate)
+            TickRate = parameters.Get<int>(ParamKey.TickRate),
+            RejoinToken = parameters.Get<string>(ParamKey.RejoinToken)
         };
     }
 

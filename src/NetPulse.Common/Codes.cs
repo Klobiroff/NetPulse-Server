@@ -124,5 +124,6 @@ namespace NetPulse.Common
         public const byte IsInactive = 53;
         public const byte ErrorCode = 54;
         public const byte Message = 55;
+        public const byte RejoinToken = 56;
     }
 }

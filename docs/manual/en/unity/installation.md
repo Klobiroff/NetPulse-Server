@@ -1,6 +1,6 @@
 # Installation
 
-The client is the Unity package `com.netpulse.unity` (version 0.3). It supports Unity 2021.3 LTS through Unity 6000.x, uses plain C# 9 and runs on the main thread, and it works with both Mono and IL2CPP. You also need a running NetPulse server; see [getting started](../getting-started.md).
+The client is the Unity package `com.netpulse.unity` (version 0.4). It supports Unity 2021.3 LTS through Unity 6000.x, uses plain C# 9 and runs on the main thread, and it works with both Mono and IL2CPP. You also need a running NetPulse server; see [getting started](../getting-started.md).
 
 ## Install with the Package Manager
 

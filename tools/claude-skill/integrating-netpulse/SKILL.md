@@ -11,7 +11,7 @@ NetPulse looks like Photon PUN but its API is different. Never guess names from 
 
 ## Integration recipe
 
-1. **Settings.** `Project Settings > NetPulse` creates `Assets/Resources/NetPulseSettings.asset`: host, port (UDP 5055), AppId, AppVersion. On package 0.3.0 only, set `Interpolation Delay` on `NetworkTransform` to about `0.1` (its automatic value is 2 s there; 0.3.1 fixes it, leave it at `0`).
+1. **Settings.** `Project Settings > NetPulse` creates `Assets/Resources/NetPulseSettings.asset`: host, port (UDP 5055), AppId, AppVersion. On package 0.3.0 only, set `Interpolation Delay` on `NetworkTransform` to about `0.1` (its automatic value is 2 s there; 0.3.1 fixes it, leave it at `0`). For play over the internet set `Encryption Mode` to `Required` and paste the server public key (printed by `NetPulse.Server keygen`) into `Server Public Keys` (package 0.4 and later). A missing or malformed key makes `Pulse.Connect` fail with `NetPulseReturnCode.InvalidConfiguration`.
 2. **Connect and join** from one `MonoBehaviour`: `await Pulse.Connect()`, then `await Pulse.JoinOrCreateRoom(name, new RoomOptions { MaxPlayers = n })`. `MaxPlayers` is a `byte`: cast an `int` field with `(byte)`. Catch `NetPulseException`. For random matchmaking use `Pulse.JoinRandomRoom(createOptions: new RoomOptions { ... })`: with `createOptions` the server creates a room when none matches (PUN's `JoinRandomOrCreateRoom`), so no fallback `CreateRoom` is needed.
 3. **Player prefab.** Add `NetworkObject` to the root, plus `NetworkTransform` (and `NetworkAnimator` / `NetworkRigidbody` if used). Keep it under `Assets`: the prefab registry picks it up automatically. Spawn with `Pulse.Instantiate(prefabReference, pos, rot)` after joining.
 4. **Scripts on networked objects** derive from `NetworkBehaviour`. Any class with `[NetRpc]` or `SyncVar<T>` is `partial` (`sealed partial` is fine).
@@ -19,7 +19,7 @@ NetPulse looks like Photon PUN but its API is different. Never guess names from 
 6. **State** that others must see goes in `SyncVar<T>`. Only the owner writes it (or the master with `SyncPermission.Master`). Others ask the owner through an RPC: `Rpc.To(RpcTarget.Owner).TakeDamage(10)`.
 7. **One-shot effects** (muzzle flash, sound) use `[NetRpc]` methods called as `Rpc.Flash()` or `Rpc.To(RpcTarget.All).Flash()`. Never call RPCs by string.
 8. **Room-wide values** (score, round, timer) use `RoomKey<T>`: `room.Get`, `room.OnChanged`, and `room.SetAsync(key, value, expected)` in a retry loop when several clients may write.
-9. **Run the server**: in the NetPulse server repo, `dotnet run --project src/NetPulse.Server` (UDP 5055). Test with a build plus the editor, or Multiplayer Play Mode.
+9. **Run the server**: in the NetPulse server repo, `dotnet run --project src/NetPulse.Server` (UDP 5055). Test with a build plus the editor, or Multiplayer Play Mode. For encrypted play run `dotnet run --project src/NetPulse.Server -- keygen --out server.key` once, then set `NetPulse:Encryption:Mode` to `Required` and `NetPulse:Encryption:PrivateKeyFile` to that file; a server in `Optional` or `Required` mode refuses to start without a valid key.
 10. **Verify** by compiling; the bundled analyzers report NP0001–NP0011 for wrong partial/RPC/SyncVar usage. Fix every NP diagnostic. If you cannot compile (no Unity, no package source), check by hand before handing over: every class that contains `SyncVar<`, `[NetRpc]`, `[NetSerializable]` or `: INetMessage` is declared `partial`, including small scene scripts like doors and pickups.
 
 ## Common mistakes
@@ -36,6 +36,8 @@ NetPulse looks like Photon PUN but its API is different. Never guess names from 
 | `await op` assumed not to throw | Failed operations throw `NetPulseException`; catch it |
 | `MaxPlayers = _intField` | `RoomOptions.MaxPlayers` is `byte`; cast it |
 | Raycast hit on a child collider misses the `Health` | `hit.collider.GetComponentInParent<Health>()` |
+| Client `Encryption Mode = Required` against a server with encryption `Disabled`, or a wrong or missing server public key or pre-shared key | The connection ends with `SecureHandshakeTimeout`. Use `Optional` or `Required` on the server and the public key printed by `keygen`; the server stays silent on purpose |
+| Trusting a value because the connection is encrypted | Encryption does not stop the player. Validate everything that affects fairness on the server or in a plugin |
 | Code not compiled before handing over | Compile in Unity (or against the package) and fix every CS and NP error |
 
 Full API cheat sheet and a compiled example (player, health, gun, shared score): `reference.md`.

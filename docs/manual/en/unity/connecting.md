@@ -72,7 +72,7 @@ public sealed class ConnectWithSettings : MonoBehaviour
 }
 ```
 
-`Pulse.Connect(settings)` also becomes the active `NetPulseSettings.Instance`, so rates, the prefab registry and the other fields come from it. A third overload takes a `ConnectionOptions` object with `Host`, `Port`, `ConnectionKey`, `AppId`, `AppVersion`, `UserId`, `NickName`, `AuthToken` and `RequestTimeout`. It skips the settings asset entirely, which suits tests and tools:
+`Pulse.Connect(settings)` also becomes the active `NetPulseSettings.Instance`, so rates, the prefab registry and the other fields come from it. A third overload takes a `ConnectionOptions` object with `Host`, `Port`, `ConnectionKey`, `AppId`, `AppVersion`, `UserId`, `NickName`, `AuthToken`, `RequestTimeout` and the [encryption](#encryption) fields. It skips the settings asset entirely, which suits tests and tools:
 
 ```csharp
 using NetPulse;
@@ -124,6 +124,54 @@ public sealed class ConnectWithToken : MonoBehaviour
 ```
 
 A rejected token fails the `Connect` operation with `AuthenticationFailed` (-32), and the server drops the connection. The token is cleared when the domain reloads or play mode restarts, so set it on every run.
+
+## Encryption
+
+NetPulse can encrypt and authenticate the whole connection. The server decides what it accepts ([Security](../server/security.md#transport-encryption)), the client decides what it sends:
+
+| Client mode | Behaviour |
+|---|---|
+| `Off` (default) | The client sends plain packets. It connects to a server whose mode is `Disabled` or `Optional`. |
+| `Required` | The client never sends and never accepts a plain packet. It connects to a server whose mode is `Optional` or `Required`. |
+
+There is no "prefer encryption" mode on purpose: a client that falls back to plain text can be pushed into it by an attacker.
+
+To turn it on:
+
+1. Run `NetPulse.Server keygen` on the server. It prints the **public** key. The private key stays on the server.
+2. Open `Project Settings > NetPulse` (or the settings asset) and set `Encryption Mode` to `Required`.
+3. Paste the public key into `Server Public Keys`. The field checks the format. Add a second key only while you rotate the server key ([Deployment](../server/deployment.md#rotating-the-server-key)).
+4. Optionally fill `Pre Shared Key` if the server uses one.
+
+The same fields exist in code:
+
+```csharp
+using NetPulse;
+using NetPulse.Common.Security;
+using UnityEngine;
+
+public sealed class ConnectEncrypted : MonoBehaviour
+{
+    [SerializeField] private string _serverPublicKey = string.Empty;
+
+    private async void Start()
+    {
+        var options = ConnectionOptions.From(NetPulseSettings.Instance, Pulse.UserId, "Player");
+        options.EncryptionMode = ClientEncryptionMode.Required;
+        options.ServerPublicKeys = new[] { _serverPublicKey };
+        await Pulse.Connect(options);
+        Debug.Log($"Encrypted: {Pulse.Client.IsEncrypted}");
+    }
+}
+```
+
+`ConnectionOptions.ValidateSecurity()` returns a message for a missing or malformed key, or `null` when the options are fine. `Pulse.Connect` fails the operation with `NetPulseReturnCode.InvalidConfiguration` (-104) in that case and sends nothing. `Pulse.Client.IsEncrypted` is `true` once the handshake has finished.
+
+If the handshake cannot finish, the connection ends with one of two disconnect reasons: `SecureHandshakeTimeout` (the server did not answer within `Handshake Timeout`, which also happens with a wrong server key or pre-shared key, because the server stays silent on purpose) and `SecureHandshakeFailed` (the answer could not be verified, or the session was closed because it reached its counter limit). A key that the server does not know looks like a timeout, not like a rejection.
+
+The server public key is not secret, but it has to be the real one: it is what protects the client from a man in the middle. The pre-shared key and the connection key travel inside the build and can be extracted, see the threat model in [Security](../server/security.md#what-is-protected-and-what-is-not).
+
+Encryption adds 26 bytes to every datagram (more with `Padding Block`). The cryptography is C# code in the package and works with Mono and IL2CPP on every platform that supports `System.Net.Sockets`. WebGL, which has no UDP, is outside the scope of this transport.
 
 ## States and events
 
@@ -226,6 +274,10 @@ Callbacks run on the main thread. An exception in one handler is logged and the 
 | `RemoteConnectionClose` | The server closed the connection (a kick, a shutdown, a rejected token) |
 | `ConnectionRejected` | The server refused the handshake, for example because of a wrong connection key |
 | `InvalidProtocol` | The server speaks a different transport protocol version |
+| `SecureHandshakeTimeout` | The secure handshake got no answer within `Handshake Timeout`: a wrong server key or pre-shared key, a server without encryption, or a lost network |
+| `SecureHandshakeFailed` | The answer of the server could not be verified, or the encrypted session was closed |
+| `RateLimited` | The server disconnected you for sending too many messages or bytes, or a message that was too large (the transport adds extra data after the reason, for example `RemoteConnectionClose:RateLimited`) |
+| `AuthTimeout`, `TooManyAuthAttempts` | The server disconnected you because you did not authenticate in time, or failed too often |
 | `Failed to open a UDP socket` | The local socket could not be opened |
 | A server message | An authentication failure passes the server's text (for example for a wrong `AppId`) |
 

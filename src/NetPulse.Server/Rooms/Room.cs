@@ -362,6 +362,13 @@ public sealed partial class Room
             return new JoinOutcome(ReturnCode.InvalidRequest, "User is already in this room");
         }
 
+        if (rejoin && _services.Limits.RequireRejoinToken && !RejoinTokenMatches(existing!, context.RejoinToken))
+        {
+            _services.Metrics.LimitViolated();
+            await AfterFailedJoinAsync(creating);
+            return new JoinOutcome(ReturnCode.Forbidden, "A valid rejoin token is required");
+        }
+
         var rejected = CheckAdmission(rejoin);
 
         if (rejected != ReturnCode.Ok)
@@ -438,9 +445,24 @@ public sealed partial class Room
             _actors.Add(actor);
         }
 
+        actor.RejoinToken = _services.Limits.RequireRejoinToken ? NewRejoinToken() : null;
         peer.Room = this;
         RecomputeMaster(false);
         return actor;
+    }
+
+    private static string NewRejoinToken() => Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(18));
+
+    private static bool RejoinTokenMatches(RoomActor existing, string? presented)
+    {
+        if (existing.RejoinToken is null || presented is null)
+        {
+            return false;
+        }
+
+        return System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(
+            System.Text.Encoding.UTF8.GetBytes(existing.RejoinToken),
+            System.Text.Encoding.UTF8.GetBytes(presented));
     }
 
     private short CheckAdmission(bool rejoin)
@@ -504,7 +526,8 @@ public sealed partial class Room
             IsOpen = _options.IsOpen,
             IsVisible = _options.IsVisible,
             IsRejoin = rejoin,
-            TickRate = _services.TickRate
+            TickRate = _services.TickRate,
+            RejoinToken = actor.RejoinToken
         };
 
         context.Peer.SendResponse(context.OpCode, context.RequestId, ReturnCode.Ok, null, response.ToParameters());

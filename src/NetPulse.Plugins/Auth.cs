@@ -16,6 +16,10 @@ public sealed class AuthRequest
     public PropertyTable? AuthData { get; init; }
 
     public string? RemoteEndpoint { get; init; }
+
+    public bool IsEncrypted { get; init; }
+
+    public byte[]? ChannelBinding { get; init; }
 }
 
 public sealed class AuthResult

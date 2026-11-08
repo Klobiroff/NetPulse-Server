@@ -9,4 +9,9 @@
     <AssemblyName>NetPulse.Common</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="NetPulse.Common.Tests" />
+    <InternalsVisibleTo Include="NetPulse.Server.Tests" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
 using System.Diagnostics.Metrics;
+using NetPulse.Common.Security;
 
 namespace NetPulse.Server.Core;
 
@@ -18,6 +19,10 @@ public sealed class ServerMetrics : IDisposable
     private long _pluginErrors;
     private long _peersOverloaded;
     private long _ownershipViolations;
+    private long _peersRateLimited;
+    private long _connectionsRejected;
+    private long _authTimeouts;
+    private long _limitViolations;
 
     public ServerMetrics()
     {
@@ -27,6 +32,18 @@ public sealed class ServerMetrics : IDisposable
         _meter.CreateObservableGauge("netpulse.rooms", () => Interlocked.Read(ref _rooms));
         _meter.CreateObservableCounter("netpulse.peers_overloaded", () => Interlocked.Read(ref _peersOverloaded));
         _meter.CreateObservableCounter("netpulse.ownership_violations", () => Interlocked.Read(ref _ownershipViolations));
+        _meter.CreateObservableCounter("netpulse.peers_rate_limited", () => Interlocked.Read(ref _peersRateLimited));
+        _meter.CreateObservableCounter("netpulse.connections_rejected", () => Interlocked.Read(ref _connectionsRejected));
+        _meter.CreateObservableCounter("netpulse.auth_timeouts", () => Interlocked.Read(ref _authTimeouts));
+        _meter.CreateObservableCounter("netpulse.limit_violations", () => Interlocked.Read(ref _limitViolations));
+        _meter.CreateObservableCounter("netpulse.handshakes_ok", () => Security.HandshakesSucceeded);
+        _meter.CreateObservableCounter("netpulse.handshakes_failed", () => Security.HandshakesFailed);
+        _meter.CreateObservableCounter("netpulse.handshakes_rate_limited", () => Security.HandshakesRateLimited);
+        _meter.CreateObservableCounter("netpulse.cookies_sent", () => Security.CookiesSent);
+        _meter.CreateObservableCounter("netpulse.decrypt_failures", () => Security.DecryptFailures);
+        _meter.CreateObservableCounter("netpulse.replays", () => Security.Replays);
+        _meter.CreateObservableCounter("netpulse.rekeys", () => Security.Rekeys);
+        _meter.CreateObservableCounter("netpulse.plaintext_rejected", () => Security.PlaintextRejected);
     }
 
     public long Peers => Interlocked.Read(ref _peers);
@@ -47,6 +64,16 @@ public sealed class ServerMetrics : IDisposable
 
     public long OwnershipViolations => Interlocked.Read(ref _ownershipViolations);
 
+    public SecurityCounters Security { get; } = new();
+
+    public long PeersRateLimited => Interlocked.Read(ref _peersRateLimited);
+
+    public long ConnectionsRejected => Interlocked.Read(ref _connectionsRejected);
+
+    public long AuthTimeouts => Interlocked.Read(ref _authTimeouts);
+
+    public long LimitViolations => Interlocked.Read(ref _limitViolations);
+
     public void PeerConnected() => Interlocked.Increment(ref _peers);
 
     public void PeerDisconnected() => Interlocked.Decrement(ref _peers);
@@ -60,6 +87,14 @@ public sealed class ServerMetrics : IDisposable
     public void PeerOverloaded() => Interlocked.Increment(ref _peersOverloaded);
 
     public void OwnershipViolation() => Interlocked.Increment(ref _ownershipViolations);
+
+    public void PeerRateLimited() => Interlocked.Increment(ref _peersRateLimited);
+
+    public void ConnectionRejected() => Interlocked.Increment(ref _connectionsRejected);
+
+    public void AuthTimedOut() => Interlocked.Increment(ref _authTimeouts);
+
+    public void LimitViolated() => Interlocked.Increment(ref _limitViolations);
 
     public void RecordIn(int bytes)
     {

@@ -7,9 +7,12 @@ namespace NetPulse.Common
 {
     public sealed class NetReader
     {
+        public const int MaxContainers = 4096;
+
         private readonly byte[] _data;
         private readonly int _end;
         private int _position;
+        private int _containers;
 
         public NetReader(byte[] data, int offset, int count)
         {
@@ -200,6 +203,7 @@ namespace NetPulse.Common
                 case NetTypeCode.PropertyTable:
                     return ReadPropertyTable(depth);
                 case NetTypeCode.ParameterDictionary:
+                    EnterContainer();
                     return ParameterDictionary.ReadFrom(this, depth + 1);
             }
 
@@ -235,6 +239,7 @@ namespace NetPulse.Common
 
         private object[] ReadObjectArray(int depth)
         {
+            EnterContainer();
             var count = ReadCount(1);
             var result = new object[count];
 
@@ -248,6 +253,7 @@ namespace NetPulse.Common
 
         private Dictionary<string, object> ReadDictionary(int depth)
         {
+            EnterContainer();
             var count = ReadCount(2);
             var result = new Dictionary<string, object>(count);
 
@@ -262,6 +268,7 @@ namespace NetPulse.Common
 
         private PropertyTable ReadPropertyTable(int depth)
         {
+            EnterContainer();
             var count = ReadCount(2);
             var result = new PropertyTable();
 
@@ -284,6 +291,14 @@ namespace NetPulse.Common
             }
 
             return (int)count;
+        }
+
+        private void EnterContainer()
+        {
+            if (++_containers > MaxContainers)
+            {
+                throw new NetSerializationException("Too many nested containers.");
+            }
         }
 
         private int Take(int count)

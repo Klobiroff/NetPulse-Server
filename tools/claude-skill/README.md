@@ -1,6 +1,6 @@
 # Claude Code skill: integrating-netpulse
 
-`integrating-netpulse` teaches Claude Code how to add NetPulse multiplayer to a Unity game or move a Photon PUN project to NetPulse. It contains the integration steps, the common mistakes and an API reference with a worked example that compiles against package 0.3.1.
+`integrating-netpulse` teaches Claude Code how to add NetPulse multiplayer to a Unity game or move a Photon PUN project to NetPulse. It contains the integration steps, the common mistakes and an API reference with a worked example that compiles against package 0.4.0.
 
 ## Install
 

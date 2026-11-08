@@ -22,6 +22,44 @@ The server sends responses and most events with `ReliableOrdered`. Events raised
 - The server drops a peer that is silent for `DisconnectTimeoutMs` (10 seconds by default). Keep calling `PollEvents`, which sends the transport's keep-alive messages.
 - When the server disconnects a client on purpose, it puts a UTF-8 reason in the disconnect data. Known reasons are `Overloaded` and `AuthenticationFailed`.
 
+## Encrypted transport
+
+When the server runs with `Encryption:Mode` set to `Optional` or `Required`, an encrypting client wraps every UDP datagram of the LiteNetLib stream in a record. Nothing above the transport changes: the messages described below are the plaintext inside the records. With `Disabled`, or for a plain client on an `Optional` server, the datagrams are exactly the LiteNetLib datagrams described above. The reference implementation is `NetPulse.Common/Security`, which has no dependency on LiteNetLib.
+
+**Discriminator.** The low five bits of the first byte of a LiteNetLib packet are its packet property, which is always below `0x1F`. A NetPulse record has `0x1F` in those five bits, so the two kinds are told apart by the first byte:
+
+| First byte | Record | Direction |
+|---|---|---|
+| `0x1F` | `Init` | client to server |
+| `0x3F` | `Retry` | server to client |
+| `0x5F` | `Response` | server to client |
+| `0x7F` | `Data` | both |
+| `0xFF` | `Data` with padding | both |
+
+**Algorithms.** There is no negotiation. The handshake is the Noise pattern `NK` with the server's static key pinned: `Noise_NK_25519_ChaChaPoly_SHA256`, or `Noise_NKpsk0_25519_ChaChaPoly_SHA256` when a pre-shared key is used, with the prologue `0x1F 0x01` followed by the 4-byte key id. The key id is the first 4 bytes of the SHA-256 of the server's public key. The result is two ChaCha20-Poly1305 keys, one per direction, and the handshake hash.
+
+**Handshake.**
+
+```text
+Init     = 0x1F | version (1) | key id (4) | cookie length (1: 0 or 16) | cookie | Noise message 1 (48) | zero padding
+Retry    = 0x3F | cookie length (16) | cookie (16)
+Response = 0x5F | Noise message 2 (48)
+```
+
+An `Init` is padded to at least 96 bytes. Both replies are shorter than the request. The cookie is the first 16 bytes of `HMAC-SHA256(secret, address (16) | port (2, big-endian) | epoch (8))`; the address is the IPv6 form, with an IPv4 address written as `::ffff:a.b.c.d`. A client that has no cookie sends an empty one, receives a `Retry`, and sends the `Init` again with the cookie, and the server does the key agreement only then. The client replaces its first LiteNetLib connect request with the `Init`, so the transport's own retransmissions repeat the handshake. After the `Response`, the client sends its connect request in a `Data` record.
+
+**Data record.**
+
+```text
+type (1) | epoch (1) | counter (8, little-endian) | ciphertext | tag (16)
+```
+
+The 10 header bytes are the associated data, the nonce is four zero bytes followed by the counter, and each direction has its own key. The overhead is 26 bytes. In a padded record (type `0xFF`) the plaintext is the payload, zero bytes, and a 2-byte little-endian count of those zero bytes, and the whole record is a multiple of the padding block. The counter starts at 0 for each direction and only grows. The receiver keeps a sliding window (4096 packets by default), checks the tag first and moves the window only after the tag is valid.
+
+**Rekeying.** Each direction replaces its key by `HKDF-Expand(key, "rekey", 32)` and increments the epoch byte. The receiver accepts the next four epochs ahead, which covers packet loss, and keeps the previous key until the replay window has passed it.
+
+**Errors.** The server answers a malformed or unverifiable record with nothing. A client that gets no reply sees only a timeout.
+
 ## Primitives
 
 All multi-byte numbers are little-endian.

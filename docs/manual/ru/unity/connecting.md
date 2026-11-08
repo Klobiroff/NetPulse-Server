@@ -72,7 +72,7 @@ public sealed class ConnectWithSettings : MonoBehaviour
 }
 ```
 
-`Pulse.Connect(settings)` ещё и становится активным `NetPulseSettings.Instance`, поэтому частоты, реестр префабов и остальные поля берутся из него. Третья перегрузка принимает объект `ConnectionOptions` с полями `Host`, `Port`, `ConnectionKey`, `AppId`, `AppVersion`, `UserId`, `NickName`, `AuthToken` и `RequestTimeout`. Она полностью обходит ассет настроек, что удобно для тестов и инструментов:
+`Pulse.Connect(settings)` ещё и становится активным `NetPulseSettings.Instance`, поэтому частоты, реестр префабов и остальные поля берутся из него. Третья перегрузка принимает объект `ConnectionOptions` с полями `Host`, `Port`, `ConnectionKey`, `AppId`, `AppVersion`, `UserId`, `NickName`, `AuthToken`, `RequestTimeout` и полями [шифрования](#encryption). Она полностью обходит ассет настроек, что удобно для тестов и инструментов:
 
 ```csharp
 using NetPulse;
@@ -124,6 +124,54 @@ public sealed class ConnectWithToken : MonoBehaviour
 ```
 
 Отклонённый токен завершает операцию `Connect` ошибкой `AuthenticationFailed` (-32), а сервер разрывает соединение. Токен сбрасывается при перезагрузке домена и при новом запуске Play Mode, поэтому задавайте его при каждом запуске.
+
+## Шифрование {#encryption}
+
+NetPulse умеет шифровать и аутентифицировать всё соединение. Сервер решает, что принимать ([Безопасность](../server/security.md#transport-encryption)), клиент решает, что отправлять:
+
+| Режим клиента | Поведение |
+|---|---|
+| `Off` (по умолчанию) | Клиент отправляет открытые пакеты. Он подключается к серверу в режиме `Disabled` или `Optional`. |
+| `Required` | Клиент никогда не отправляет и не принимает открытые пакеты. Он подключается к серверу в режиме `Optional` или `Required`. |
+
+Режима «предпочтительно шифровать» нет намеренно: клиента, умеющего откатываться на открытый текст, атакующий может к этому вынудить.
+
+Чтобы включить шифрование:
+
+1. Выполните на сервере `NetPulse.Server keygen`. Команда напечатает **публичный** ключ. Приватный остаётся на сервере.
+2. Откройте `Project Settings > NetPulse` (или ассет настроек) и установите `Encryption Mode` в `Required`.
+3. Вставьте публичный ключ в `Server Public Keys`. Поле проверяет формат. Второй ключ добавляйте только на время ротации ключа сервера ([Развёртывание](../server/deployment.md#rotating-the-server-key)).
+4. При необходимости заполните `Pre Shared Key`, если его использует сервер.
+
+Те же поля доступны из кода:
+
+```csharp
+using NetPulse;
+using NetPulse.Common.Security;
+using UnityEngine;
+
+public sealed class ConnectEncrypted : MonoBehaviour
+{
+    [SerializeField] private string _serverPublicKey = string.Empty;
+
+    private async void Start()
+    {
+        var options = ConnectionOptions.From(NetPulseSettings.Instance, Pulse.UserId, "Player");
+        options.EncryptionMode = ClientEncryptionMode.Required;
+        options.ServerPublicKeys = new[] { _serverPublicKey };
+        await Pulse.Connect(options);
+        Debug.Log($"Encrypted: {Pulse.Client.IsEncrypted}");
+    }
+}
+```
+
+`ConnectionOptions.ValidateSecurity()` возвращает сообщение о пропущенном или неверном ключе или `null`, если настройки в порядке. В первом случае `Pulse.Connect` завершает операцию ошибкой `NetPulseReturnCode.InvalidConfiguration` (-104) и ничего не отправляет. `Pulse.Client.IsEncrypted` равно `true`, когда рукопожатие завершено.
+
+Если рукопожатие не завершается, соединение заканчивается одной из двух причин: `SecureHandshakeTimeout` (сервер не ответил за `Handshake Timeout`; так же выглядит неверный ключ сервера или предварительно разделённый ключ, потому что сервер молчит намеренно) и `SecureHandshakeFailed` (ответ не удалось проверить или сессия закрыта из-за достижения предела счётчика). Ключ, неизвестный серверу, выглядит как тайм-аут, а не как отказ.
+
+Публичный ключ сервера не секрет, но он должен быть настоящим: именно он защищает клиента от «человека посередине». Предварительно разделённый ключ и ключ подключения идут внутри сборки и могут быть извлечены, см. модель угроз в разделе [Безопасность](../server/security.md#what-is-protected-and-what-is-not).
+
+Шифрование добавляет 26 байт к каждой датаграмме (больше при `Padding Block`). Криптография — код C# внутри пакета, он работает на Mono и IL2CPP на всех платформах с `System.Net.Sockets`. WebGL, где нет UDP, этот транспорт не охватывает.
 
 ## Состояния и события {#states-and-events}
 
@@ -226,6 +274,10 @@ public sealed class RoomWatcher : MonoBehaviour, IRoomCallbacks
 | `RemoteConnectionClose` | Сервер закрыл соединение (исключение игрока, остановка, отклонённый токен) |
 | `ConnectionRejected` | Сервер отказал в рукопожатии, например из-за неверного ключа подключения |
 | `InvalidProtocol` | Сервер использует другую версию транспортного протокола |
+| `SecureHandshakeTimeout` | Защищённое рукопожатие не получило ответа за `Handshake Timeout`: неверный ключ сервера или предварительно разделённый ключ, сервер без шифрования или потеря сети |
+| `SecureHandshakeFailed` | Ответ сервера не удалось проверить или зашифрованная сессия закрыта |
+| `RateLimited` | Сервер отключил вас за слишком много сообщений или байтов либо за слишком большое сообщение (после причины транспорт добавляет дополнительные данные, например `RemoteConnectionClose:RateLimited`) |
+| `AuthTimeout`, `TooManyAuthAttempts` | Сервер отключил вас за то, что вы не аутентифицировались вовремя или слишком часто ошибались |
 | `Failed to open a UDP socket` | Не удалось открыть локальный сокет |
 | Сообщение сервера | При ошибке аутентификации передаётся текст сервера (например, для неверного `AppId`) |
 

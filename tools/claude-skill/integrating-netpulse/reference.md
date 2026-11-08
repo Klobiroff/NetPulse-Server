@@ -18,6 +18,8 @@ Namespaces: `using NetPulse;` for the client API, `using NetPulse.Common;` for `
 | `Pulse.WaitForPlayersAsync(count)`, `WaitUntilAsync(Func<bool>)` | Await helpers |
 | `Pulse.LoadScene(name)` | Master only; everyone follows (`AutoSyncScene`) |
 | `Pulse.OfflineMode = true` | Same API without a server |
+| `ConnectionOptions` encryption fields | `EncryptionMode` (`ClientEncryptionMode.Off` or `Required`, from `NetPulse.Common.Security`), `ServerPublicKeys` (`string[]` of Base64 keys), `PreSharedKey`, `RekeyAfterPackets`, `RekeyAfterMs`, `ReplayWindow`, `PaddingBlock`, `HandshakeTimeout` (seconds). They come from `NetPulseSettings` through `ConnectionOptions.From`. `options.ValidateSecurity()` returns an error text or `null` |
+| `Pulse.Client.IsEncrypted` | `true` once the secure handshake has finished |
 
 `RoomOptions`: `MaxPlayers` (a `byte`, cast `int` values), `IsVisible`, `IsOpen`, `CustomProperties`, `LobbyProperties`, `Plugin`, `PlayerTtlMs`, `EmptyRoomTtlMs`.
 
@@ -25,7 +27,7 @@ Every `NetOperation` supports `await`, `yield return` and `.Completed`. Awaiting
 
 ## Events (`Pulse.Events`)
 
-`OnConnected`, `OnDisconnected(string)`, `OnJoinedRoom`, `OnLeftRoom`, `OnJoinRoomFailed(short, string)`, `OnPlayerEnteredRoom(Player)`, `OnPlayerLeftRoom(Player)`, `OnMasterClientSwitched(Player)`, `OnRoomPropertiesChanged(PropertyTable)`, `OnPlayerPropertiesChanged(Player, PropertyTable)`, `OnOwnershipChanged(NetworkObject, Player, Player)`, `OnOwnershipRequest(NetworkObject, Player)`, `OnNetworkSceneLoaded(string)`. Unsubscribe in `OnDisable`/`OnDestroy`. A `MonoBehaviour` can instead derive from `NetPulseCallbacks` and override the same names.
+`OnConnected`, `OnDisconnected(string)`, `OnJoinedRoom`, `OnLeftRoom`, `OnJoinRoomFailed(short, string)`, `OnPlayerEnteredRoom(Player)`, `OnPlayerLeftRoom(Player)`, `OnMasterClientSwitched(Player)`, `OnRoomPropertiesChanged(PropertyTable)`, `OnPlayerPropertiesChanged(Player, PropertyTable)`, `OnOwnershipChanged(NetworkObject, Player, Player)`, `OnOwnershipRequest(NetworkObject, Player)`, `OnNetworkSceneLoaded(string)`. Disconnect reasons that matter for security: `SecureHandshakeTimeout`, `SecureHandshakeFailed`, `RateLimited`, `AuthTimeout`, `TooManyAuthAttempts`. Unsubscribe in `OnDisable`/`OnDestroy`. A `MonoBehaviour` can instead derive from `NetPulseCallbacks` and override the same names.
 
 ## Spawning
 
@@ -104,9 +106,9 @@ NP0001 missing `partial`; NP0002 `[NetRpc]` outside a `NetworkBehaviour`; NP0003
 
 ## Server
 
-The server is a .NET 10 app. From the NetPulse server repository run `dotnet run --project src/NetPulse.Server`; it listens on UDP 5055 and reads `appsettings.json` (`NetPulse:Port`, `AppId`, plugins). For production use `dotnet publish` and run the output as a service. Open the UDP port in the firewall.
+The server is a .NET 10 app. From the NetPulse server repository run `dotnet run --project src/NetPulse.Server`; it listens on UDP 5055 and reads `appsettings.json` (`NetPulse:Port`, `AppId`, plugins). For production use `dotnet publish` and run the output as a service. Open the UDP port in the firewall. Encryption is configured under `NetPulse:Encryption` (`Mode` = `Disabled`, `Optional` or `Required`; `PrivateKeyFile`; optional `PreSharedKey`). Create the key with `NetPulse.Server keygen --out server.key`; it prints the public key for the Unity settings. Abuse limits live under `NetPulse:Security`. The server never logs keys or tokens.
 
-## Worked example (compiles against NetPulse 0.3)
+## Worked example (compiles against NetPulse 0.4)
 
 A shooter where each player owns their character, damage goes to the victim's owner, and the room keeps a shared score. Prefab: `NetworkObject`, `NetworkTransform` (on 0.3.0 set Interpolation Delay to 0.1), `CharacterController`, `PlayerController`, `Health`, `Gun`.
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NetPulse.Common;
+using NetPulse.Common.Security;
 using NetPulse.Plugins;
 using NetPulse.Server.Hosting;
 using NetPulse.Server.Networking;
@@ -107,15 +108,15 @@ public abstract class ServerTestBase : IAsyncLifetime
         await _host!.StopAsync();
     }
 
-    protected async Task<BotClient> ConnectAsync(string name, bool authenticate = true, string? appId = null)
+    protected async Task<BotClient> ConnectAsync(string name, bool authenticate = true, string? appId = null, SecureClientSettings? security = null, int? port = null, string? connectionKey = null, string? authToken = null)
     {
-        var client = new BotClient(name);
+        var client = new BotClient(name, security);
         _clients.Add(client);
-        await client.ConnectAsync("127.0.0.1", Port);
+        await client.ConnectAsync("127.0.0.1", port ?? Port, connectionKey ?? Protocol.DefaultConnectionKey);
 
         if (authenticate)
         {
-            var response = await client.AuthenticateAsync(appId: appId);
+            var response = await client.AuthenticateAsync(appId: appId, authToken: authToken);
             Assert.Equal(ReturnCode.Ok, response.ReturnCode);
         }
 
