@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/changelog/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/changelog/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/changelog/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/concepts/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/concepts/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/concepts/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/getting-started/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/getting-started/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/getting-started/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/migrating-from-pun/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/migrating-from-pun/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/migrating-from-pun/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/troubleshooting/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/troubleshooting/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/troubleshooting/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/plugins/authentication/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/authentication/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/authentication/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/plugins/hooks/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/hooks/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/hooks/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/plugins/host-api/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/host-api/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/host-api/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/plugins/hot-reload/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/hot-reload/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/hot-reload/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/plugins/overview/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/overview/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/overview/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/plugins/testing/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/testing/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/testing/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/plugins/timers-http-background/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/timers-http-background/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/timers-http-background/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/plugins/writing-a-plugin/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/writing-a-plugin/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/writing-a-plugin/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/reference/codes/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/reference/codes/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/reference/codes/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/reference/protocol/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/reference/protocol/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/reference/protocol/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/server/configuration/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/server/configuration/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/server/configuration/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/server/deployment/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/server/deployment/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/server/deployment/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/server/operations/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/server/operations/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/server/operations/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/server/running/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/server/running/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/server/running/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/server/security/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/server/security/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/server/security/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/analyzers/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/analyzers/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/analyzers/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/async/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/async/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/async/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/components/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/components/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/components/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/connecting/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/connecting/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/connecting/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/il2cpp/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/il2cpp/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/il2cpp/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/installation/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/installation/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/installation/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/lifecycle/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/lifecycle/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/lifecycle/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/low-level-api/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/low-level-api/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/low-level-api/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/matchmaking/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/matchmaking/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/matchmaking/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/messages/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/messages/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/messages/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/network-objects/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/network-objects/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/network-objects/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/offline-mode/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/offline-mode/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/offline-mode/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/ownership/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/ownership/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/ownership/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/rooms-and-properties/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/rooms-and-properties/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/rooms-and-properties/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/rpc/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/rpc/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/rpc/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/scenes/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/scenes/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/scenes/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/settings-and-editor/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/settings-and-editor/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/settings-and-editor/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/state-sync/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/state-sync/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/state-sync/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/unity/ticks-and-time/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/ticks-and-time/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/ticks-and-time/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/changelog/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/changelog/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/changelog/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/concepts/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/concepts/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/concepts/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/getting-started/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/getting-started/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/getting-started/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/migrating-from-pun/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/migrating-from-pun/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/migrating-from-pun/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/troubleshooting/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/troubleshooting/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/troubleshooting/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/plugins/authentication/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/authentication/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/authentication/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/plugins/hooks/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/hooks/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/hooks/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/plugins/host-api/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/host-api/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/host-api/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/plugins/hot-reload/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/hot-reload/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/hot-reload/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/plugins/overview/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/overview/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/overview/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/plugins/testing/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/testing/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/testing/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/plugins/timers-http-background/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/timers-http-background/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/timers-http-background/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/plugins/writing-a-plugin/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/plugins/writing-a-plugin/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/plugins/writing-a-plugin/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/reference/codes/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/reference/codes/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/reference/codes/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/reference/protocol/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/reference/protocol/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/reference/protocol/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/server/configuration/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/server/configuration/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/server/configuration/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/server/deployment/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/server/deployment/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/server/deployment/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/server/operations/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/server/operations/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/server/operations/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/server/running/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/server/running/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/server/running/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/server/security/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/server/security/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/server/security/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/analyzers/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/analyzers/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/analyzers/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/async/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/async/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/async/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/components/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/components/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/components/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/connecting/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/connecting/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/connecting/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/il2cpp/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/il2cpp/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/il2cpp/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/installation/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/installation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/installation/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/lifecycle/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/lifecycle/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/lifecycle/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/low-level-api/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/low-level-api/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/low-level-api/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/matchmaking/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/matchmaking/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/matchmaking/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/messages/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/messages/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/messages/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/network-objects/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/network-objects/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/network-objects/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/offline-mode/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/offline-mode/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/offline-mode/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/ownership/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/ownership/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/ownership/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/rooms-and-properties/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/rooms-and-properties/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/rooms-and-properties/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/rpc/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/rpc/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/rpc/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/scenes/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/scenes/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/scenes/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/settings-and-editor/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/settings-and-editor/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/settings-and-editor/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/state-sync/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/state-sync/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/state-sync/"/>
+    </url>
+    <url>
+        <loc>https://klobiroff.github.io/NetPulse-Server/ru/unity/ticks-and-time/</loc>
+        <lastmod>2026-11-08</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://klobiroff.github.io/NetPulse-Server/ru/unity/ticks-and-time/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://klobiroff.github.io/NetPulse-Server/unity/ticks-and-time/"/>
+    </url>
+</urlset>

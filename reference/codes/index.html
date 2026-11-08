@@ -1,0 +1,2843 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Self-hosted .NET networking server with room plugins and a Unity client package.">
+      
+      
+      
+        <link rel="canonical" href="https://klobiroff.github.io/NetPulse-Server/reference/codes/">
+      
+      
+        <link rel="prev" href="../protocol/">
+      
+      
+        <link rel="next" href="../../migrating-from-pun/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../../ru/reference/codes/" hreflang="ru">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Codes and keys - NetPulse</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#codes-and-keys" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="NetPulse" class="md-header__button md-logo" aria-label="NetPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NetPulse
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Codes and keys
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../ru/reference/codes/" hreflang="ru" class="md-select__link">
+              Русский
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Klobiroff/NetPulse-Server" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Klobiroff/NetPulse-Server
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="NetPulse" class="md-nav__button md-logo" aria-label="NetPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    NetPulse
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Klobiroff/NetPulse-Server" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Klobiroff/NetPulse-Server
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Unity client
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Unity client
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/connecting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connecting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/matchmaking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Matchmaking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/rooms-and-properties/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rooms and properties
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/messages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/network-objects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network objects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/rpc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RPC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/state-sync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    State sync
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ownership
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/ticks-and-time/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ticks and time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/scenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/components/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Components
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/offline-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Offline mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/settings-and-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Settings and editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/il2cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IL2CPP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/analyzers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analyzers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/low-level-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Low-level API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Server
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Server
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running the server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/writing-a-plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing a plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/hooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hooks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/host-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/timers-http-background/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timers, HTTP and background work
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/hot-reload/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hot reload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wire protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Codes and keys
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Codes and keys
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#operation-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operation codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#return-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Return codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameter-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameter keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#value-type-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Value type codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enumerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enumerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reserved-room-property-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reserved room property keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#view-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        View ids
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrating-from-pun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrating from PUN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#operation-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operation codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#return-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Return codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameter-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameter keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#value-type-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Value type codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enumerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enumerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reserved-room-property-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reserved room property keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#view-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        View ids
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../protocol/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Reference
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="codes-and-keys">Codes and keys<a class="headerlink" href="#codes-and-keys" title="Permanent link">&para;</a></h1>
+<p>Every table on this page comes from <code>NetPulse.Common</code> (<code>Codes.cs</code>, <code>Enums.cs</code> and <code>RoomPropertyKeys.cs</code>). How they are used on the wire is described in <a href="../protocol/">Wire protocol</a>.</p>
+<h2 id="operation-codes">Operation codes<a class="headerlink" href="#operation-codes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>Authenticate</code></td>
+<td>Log in. Must be the first operation.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>JoinLobby</code></td>
+<td>Subscribe to the room list.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>LeaveLobby</code></td>
+<td>Unsubscribe from the room list.</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>CreateRoom</code></td>
+<td>Create a room and join it.</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>JoinRoom</code></td>
+<td>Join an existing room by name.</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>JoinOrCreateRoom</code></td>
+<td>Join a room, creating it if it does not exist.</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>JoinRandomRoom</code></td>
+<td>Join a random open room that matches a filter.</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>LeaveRoom</code></td>
+<td>Leave the current room.</td>
+</tr>
+<tr>
+<td>20</td>
+<td><code>RaiseEvent</code></td>
+<td>Send an event to other players.</td>
+</tr>
+<tr>
+<td>21</td>
+<td><code>SetRoomProperties</code></td>
+<td>Change room properties.</td>
+</tr>
+<tr>
+<td>22</td>
+<td><code>SetPlayerProperties</code></td>
+<td>Change player properties.</td>
+</tr>
+<tr>
+<td>23</td>
+<td><code>ChangeInterestGroups</code></td>
+<td>Join or leave interest groups.</td>
+</tr>
+<tr>
+<td>24</td>
+<td><code>TransferOwnership</code></td>
+<td>Give a network object to another player.</td>
+</tr>
+<tr>
+<td>25</td>
+<td><code>RequestOwnership</code></td>
+<td>Ask for ownership of a network object.</td>
+</tr>
+<tr>
+<td>26</td>
+<td><code>RegisterSceneObjects</code></td>
+<td>Master only: declare the ownership modes of scene objects.</td>
+</tr>
+<tr>
+<td>30</td>
+<td><code>GetRoomList</code></td>
+<td>Get the current room list.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="event-codes">Event codes<a class="headerlink" href="#event-codes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+<th>Sent by</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 to 199</td>
+<td>your own events</td>
+<td>clients, plugins</td>
+<td><code>EventCode.MaxUserEvent</code> is 199.</td>
+</tr>
+<tr>
+<td>230</td>
+<td><code>RoomList</code></td>
+<td>server</td>
+<td>Full room list or a delta.</td>
+</tr>
+<tr>
+<td>231</td>
+<td><code>PlayerJoined</code></td>
+<td>server</td>
+<td>Another player joined.</td>
+</tr>
+<tr>
+<td>232</td>
+<td><code>PlayerLeft</code></td>
+<td>server</td>
+<td>A player left or became inactive.</td>
+</tr>
+<tr>
+<td>233</td>
+<td><code>RoomPropertiesChanged</code></td>
+<td>server</td>
+<td>Room property delta.</td>
+</tr>
+<tr>
+<td>234</td>
+<td><code>PlayerPropertiesChanged</code></td>
+<td>server</td>
+<td>Player property delta.</td>
+</tr>
+<tr>
+<td>235</td>
+<td><code>MasterClientChanged</code></td>
+<td>server</td>
+<td>A new master client.</td>
+</tr>
+<tr>
+<td>236</td>
+<td><code>OwnershipChanged</code></td>
+<td>server</td>
+<td>A network object changed owner.</td>
+</tr>
+<tr>
+<td>237</td>
+<td><code>OwnershipRequested</code></td>
+<td>server</td>
+<td>Sent to the owner of a <code>Request</code>-mode object.</td>
+</tr>
+<tr>
+<td>240</td>
+<td><code>ObjectInstantiate</code></td>
+<td>clients</td>
+<td>A network object was created.</td>
+</tr>
+<tr>
+<td>241</td>
+<td><code>ObjectDestroy</code></td>
+<td>clients</td>
+<td>A network object was destroyed.</td>
+</tr>
+<tr>
+<td>242</td>
+<td><code>Rpc</code></td>
+<td>clients</td>
+<td>A remote procedure call.</td>
+</tr>
+<tr>
+<td>243</td>
+<td><code>StateSync</code></td>
+<td>clients</td>
+<td>State of an object, from its owner.</td>
+</tr>
+<tr>
+<td>244</td>
+<td><code>Message</code></td>
+<td>clients</td>
+<td>A typed message.</td>
+</tr>
+<tr>
+<td>245</td>
+<td><code>SyncVarSet</code></td>
+<td>clients</td>
+<td>A master-owned sync variable changed (master only).</td>
+</tr>
+<tr>
+<td>250</td>
+<td><code>ErrorInfo</code></td>
+<td>server</td>
+<td>A warning or error notice with <code>ErrorCode</code> and <code>Message</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Clients may raise codes 0 to 199 and 240 to 245. Every other code is reserved and fails with <code>Forbidden</code>. A plugin can broadcast any code.</p>
+<h2 id="return-codes">Return codes<a class="headerlink" href="#return-codes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>Ok</code></td>
+<td>Success.</td>
+</tr>
+<tr>
+<td>-1</td>
+<td><code>InternalError</code></td>
+<td>An unexpected server error.</td>
+</tr>
+<tr>
+<td>-2</td>
+<td><code>InvalidRequest</code></td>
+<td>Malformed request, unknown operation, a second join in progress, or the user is already in that room.</td>
+</tr>
+<tr>
+<td>-3</td>
+<td><code>NotAuthenticated</code></td>
+<td>Authenticate first.</td>
+</tr>
+<tr>
+<td>-4</td>
+<td><code>NotInRoom</code></td>
+<td>The operation needs a room.</td>
+</tr>
+<tr>
+<td>-5</td>
+<td><code>AlreadyInRoom</code></td>
+<td>The peer is already in a room.</td>
+</tr>
+<tr>
+<td>-6</td>
+<td><code>Forbidden</code></td>
+<td>Not allowed: a reserved event or property, or a failed ownership check.</td>
+</tr>
+<tr>
+<td>-10</td>
+<td><code>RoomNotFound</code></td>
+<td>No such room, or the room closed while joining.</td>
+</tr>
+<tr>
+<td>-11</td>
+<td><code>RoomFull</code></td>
+<td>The room has reached <code>MaxPlayers</code>.</td>
+</tr>
+<tr>
+<td>-12</td>
+<td><code>RoomClosed</code></td>
+<td>The room is not open. Also the <code>ErrorInfo</code> code sent when a room closes.</td>
+</tr>
+<tr>
+<td>-13</td>
+<td><code>RoomAlreadyExists</code></td>
+<td><code>CreateRoom</code> with a name that is taken.</td>
+</tr>
+<tr>
+<td>-14</td>
+<td><code>NoMatchFound</code></td>
+<td><code>JoinRandomRoom</code> found nothing and had no options to create a room.</td>
+</tr>
+<tr>
+<td>-15</td>
+<td><code>PropertyCasFailed</code></td>
+<td>The expected properties did not match.</td>
+</tr>
+<tr>
+<td>-16</td>
+<td><code>ActorNotFound</code></td>
+<td>The target player is not in the room.</td>
+</tr>
+<tr>
+<td>-17</td>
+<td><code>ObjectNotFound</code></td>
+<td>The view id is not registered.</td>
+</tr>
+<tr>
+<td>-20</td>
+<td><code>PluginReportedError</code></td>
+<td>A plugin refused the action. The message is the plugin's.</td>
+</tr>
+<tr>
+<td>-21</td>
+<td><code>PluginNotFound</code></td>
+<td>The room asked for a plugin that is not installed.</td>
+</tr>
+<tr>
+<td>-30</td>
+<td><code>VersionMismatch</code></td>
+<td>Different protocol version.</td>
+</tr>
+<tr>
+<td>-31</td>
+<td><code>InvalidAppId</code></td>
+<td>The AppId does not match the server's.</td>
+</tr>
+<tr>
+<td>-32</td>
+<td><code>AuthenticationFailed</code></td>
+<td>The authentication plugin refused the client.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="parameter-keys">Parameter keys<a class="headerlink" href="#parameter-keys" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Name</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>AppId</code></td>
+<td>Authenticate: string</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>ProtocolVersion</code></td>
+<td>Authenticate: int</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>AppVersion</code></td>
+<td>Authenticate: string</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>UserId</code></td>
+<td>Authenticate and responses: string</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>NickName</code></td>
+<td>Authenticate and responses: string</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>AuthToken</code></td>
+<td>Authenticate: string</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>ServerTimeTicks</code></td>
+<td>Server time in milliseconds: long</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>AuthData</code></td>
+<td>Authenticate: PropertyTable</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>RoomName</code></td>
+<td>Room operations and room info: string</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>Options</code></td>
+<td>Room options block</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>PlayerProperties</code></td>
+<td>Initial player properties: PropertyTable</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>ActorId</code></td>
+<td>Actor id: int</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>MasterClientId</code></td>
+<td>Actor id of the master: int</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>Players</code></td>
+<td>Player blocks: object[]</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>RoomProperties</code></td>
+<td>Room properties in a join response</td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>Properties</code></td>
+<td>Property delta or table</td>
+</tr>
+<tr>
+<td>18</td>
+<td><code>ExpectedProperties</code></td>
+<td>Compare-and-set condition, random-join filter</td>
+</tr>
+<tr>
+<td>19</td>
+<td><code>ExpectedMaxPlayers</code></td>
+<td>Random-join filter: byte</td>
+</tr>
+<tr>
+<td>20</td>
+<td><code>LobbyName</code></td>
+<td>JoinLobby: string</td>
+</tr>
+<tr>
+<td>21</td>
+<td><code>BecomeInactive</code></td>
+<td>LeaveRoom: bool</td>
+</tr>
+<tr>
+<td>22</td>
+<td><code>Broadcast</code></td>
+<td>Property operations: bool</td>
+</tr>
+<tr>
+<td>23</td>
+<td><code>IsRejoin</code></td>
+<td>Join response: bool</td>
+</tr>
+<tr>
+<td>24</td>
+<td><code>IsOpen</code></td>
+<td>Room state: bool</td>
+</tr>
+<tr>
+<td>25</td>
+<td><code>IsVisible</code></td>
+<td>Room state: bool</td>
+</tr>
+<tr>
+<td>26</td>
+<td><code>MaxPlayers</code></td>
+<td>Room state: byte</td>
+</tr>
+<tr>
+<td>27</td>
+<td><code>Plugin</code></td>
+<td>Room option: string</td>
+</tr>
+<tr>
+<td>28</td>
+<td><code>PlayerCount</code></td>
+<td>Room info: byte</td>
+</tr>
+<tr>
+<td>29</td>
+<td><code>LobbyProperties</code></td>
+<td>Room option: string[]</td>
+</tr>
+<tr>
+<td>30</td>
+<td><code>EventCode</code></td>
+<td>RaiseEvent: byte</td>
+</tr>
+<tr>
+<td>31</td>
+<td><code>Data</code></td>
+<td>Event payload</td>
+</tr>
+<tr>
+<td>32</td>
+<td><code>Receivers</code></td>
+<td>RaiseEvent: byte</td>
+</tr>
+<tr>
+<td>33</td>
+<td><code>TargetActors</code></td>
+<td>RaiseEvent: int[]</td>
+</tr>
+<tr>
+<td>34</td>
+<td><code>InterestGroup</code></td>
+<td>RaiseEvent: byte</td>
+</tr>
+<tr>
+<td>35</td>
+<td><code>Caching</code></td>
+<td>RaiseEvent: byte</td>
+</tr>
+<tr>
+<td>36</td>
+<td><code>Delivery</code></td>
+<td>RaiseEvent: byte</td>
+</tr>
+<tr>
+<td>37</td>
+<td><code>Sender</code></td>
+<td>Event payload: actor id</td>
+</tr>
+<tr>
+<td>38</td>
+<td><code>ViewId</code></td>
+<td>Network object id: int</td>
+</tr>
+<tr>
+<td>39</td>
+<td><code>NewOwnerActorId</code></td>
+<td>Ownership: int</td>
+</tr>
+<tr>
+<td>40</td>
+<td><code>GroupsToAdd</code></td>
+<td>ChangeInterestGroups: byte[]</td>
+</tr>
+<tr>
+<td>41</td>
+<td><code>GroupsToRemove</code></td>
+<td>ChangeInterestGroups: byte[]</td>
+</tr>
+<tr>
+<td>42</td>
+<td><code>PlayerTtlMs</code></td>
+<td>Room option: int</td>
+</tr>
+<tr>
+<td>43</td>
+<td><code>EmptyRoomTtlMs</code></td>
+<td>Room option: int</td>
+</tr>
+<tr>
+<td>44</td>
+<td><code>OwnershipMode</code></td>
+<td>RaiseEvent for an instantiate: byte</td>
+</tr>
+<tr>
+<td>45</td>
+<td><code>ViewIds</code></td>
+<td>RegisterSceneObjects: int[]</td>
+</tr>
+<tr>
+<td>46</td>
+<td><code>OwnershipModes</code></td>
+<td>RegisterSceneObjects: byte[]</td>
+</tr>
+<tr>
+<td>47</td>
+<td><code>RequesterActorId</code></td>
+<td>OwnershipRequested: int</td>
+</tr>
+<tr>
+<td>48</td>
+<td><code>ObjectFlags</code></td>
+<td>RaiseEvent for an instantiate: byte</td>
+</tr>
+<tr>
+<td>49</td>
+<td><code>TickRate</code></td>
+<td>Join response: int</td>
+</tr>
+<tr>
+<td>50</td>
+<td><code>IsFullList</code></td>
+<td>RoomList: bool</td>
+</tr>
+<tr>
+<td>51</td>
+<td><code>Rooms</code></td>
+<td>RoomList: object[]</td>
+</tr>
+<tr>
+<td>52</td>
+<td><code>RemovedRooms</code></td>
+<td>RoomList: string[]</td>
+</tr>
+<tr>
+<td>53</td>
+<td><code>IsInactive</code></td>
+<td>Player info: bool</td>
+</tr>
+<tr>
+<td>54</td>
+<td><code>ErrorCode</code></td>
+<td>ErrorInfo: int</td>
+</tr>
+<tr>
+<td>55</td>
+<td><code>Message</code></td>
+<td>ErrorInfo: string</td>
+</tr>
+</tbody>
+</table>
+<h2 id="value-type-codes">Value type codes<a class="headerlink" href="#value-type-codes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>Null</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>Bool</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>Byte</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>Short</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>Int</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>Long</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>Float</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>Double</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>ByteArray</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>IntArray</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>FloatArray</code></td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>StringArray</code></td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>ObjectArray</code></td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>Dictionary</code></td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>PropertyTable</code></td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>Guid</code></td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>ParameterDictionary</code></td>
+</tr>
+<tr>
+<td>18</td>
+<td><code>Extended</code></td>
+</tr>
+<tr>
+<td>100 to 199</td>
+<td>Custom types (<code>CustomMin</code>, <code>CustomMax</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>The Unity package uses 100 to 105 for <code>Vector2</code>, <code>Vector3</code>, <code>Quaternion</code>, <code>Color</code>, <code>Vector2Int</code> and <code>Vector3Int</code>. Payload layouts are in <a href="../protocol/#value-types">Wire protocol</a>.</p>
+<h2 id="enumerations">Enumerations<a class="headerlink" href="#enumerations" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Enum</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MessageKind</code></td>
+<td>1 <code>OperationRequest</code>, 2 <code>OperationResponse</code>, 3 <code>Event</code>, 4 <code>Ping</code>, 5 <code>Pong</code></td>
+</tr>
+<tr>
+<td><code>DeliveryMode</code></td>
+<td>0 <code>ReliableOrdered</code>, 1 <code>ReliableUnordered</code>, 2 <code>UnreliableSequenced</code>, 3 <code>Unreliable</code></td>
+</tr>
+<tr>
+<td><code>ReceiverGroup</code></td>
+<td>0 <code>Others</code>, 1 <code>All</code>, 2 <code>MasterClient</code>, 3 <code>Targets</code></td>
+</tr>
+<tr>
+<td><code>CachingOption</code></td>
+<td>0 <code>DoNotCache</code>, 1 <code>AddToRoomCache</code>, 2 <code>AddToRoomCacheGlobal</code>, 3 <code>RemoveFromRoomCache</code>, 4 <code>RemoveFromCacheForActorsLeft</code></td>
+</tr>
+<tr>
+<td><code>ObjectOwnershipMode</code></td>
+<td>0 <code>Fixed</code>, 1 <code>Takeover</code>, 2 <code>Request</code></td>
+</tr>
+<tr>
+<td><code>ObjectFlag</code></td>
+<td>1 <code>PersistAcrossScenes</code> (a bit flag in <code>ObjectFlags</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="reserved-room-property-keys">Reserved room property keys<a class="headerlink" href="#reserved-room-property-keys" title="Permanent link">&para;</a></h2>
+<p>Only the master client may set these keys. See <a href="../../server/security/#reserved-properties">Security</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Constant</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_isOpen</code></td>
+<td><code>RoomPropertyKeys.IsOpen</code></td>
+<td>bool</td>
+<td>Whether new players can join.</td>
+</tr>
+<tr>
+<td><code>_isVisible</code></td>
+<td><code>RoomPropertyKeys.IsVisible</code></td>
+<td>bool</td>
+<td>Whether the room is in the lobby list.</td>
+</tr>
+<tr>
+<td><code>_maxPlayers</code></td>
+<td><code>RoomPropertyKeys.MaxPlayers</code></td>
+<td>int, 0 to 255</td>
+<td>The player limit.</td>
+</tr>
+<tr>
+<td><code>_scene</code></td>
+<td><code>RoomPropertyKeys.Scene</code></td>
+<td>string</td>
+<td>The current network scene. A change removes scene-bound objects.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="view-ids">View ids<a class="headerlink" href="#view-ids" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Range</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 to 999</td>
+<td>Scene objects. Owned by the master client unless assigned.</td>
+</tr>
+<tr>
+<td>1000 and up</td>
+<td>Objects created by players. <code>viewId / 1000</code> is the creator's actor id, so actor 3 owns 3000 to 3999.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../protocol/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Wire protocol">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Wire protocol
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../migrating-from-pun/" class="md-footer__link md-footer__link--next" aria-label="Next: Migrating from PUN">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Migrating from PUN
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "navigation.path", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2767 @@
+
+<!doctype html>
+<html lang="ru" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Self-hosted .NET networking server with room plugins and a Unity client package.">
+      
+      
+      
+        <link rel="canonical" href="https://klobiroff.github.io/NetPulse-Server/ru/reference/protocol/">
+      
+      
+        <link rel="prev" href="../../plugins/testing/">
+      
+      
+        <link rel="next" href="../codes/">
+      
+      
+        
+          <link rel="alternate" href="../../../reference/protocol/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="ru">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Сетевой протокол - NetPulse</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Перейти к содержанию
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Верхний колонтитул">
+    <a href="../../" title="NetPulse" class="md-header__button md-logo" aria-label="NetPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NetPulse
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Сетевой протокол
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Выберите язык">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../reference/protocol/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="ru" class="md-select__link">
+              Русский
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Поиск" placeholder="Поиск" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Поиск">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Очистить" aria-label="Очистить" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Инициализация поиска
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Klobiroff/NetPulse-Server" title="Перейти к репозиторию" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Klobiroff/NetPulse-Server
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Навигация" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="NetPulse" class="md-nav__button md-logo" aria-label="NetPulse" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    NetPulse
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Klobiroff/NetPulse-Server" title="Перейти к репозиторию" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Klobiroff/NetPulse-Server
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Главная
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Быстрый старт
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Основные понятия
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Unity-клиент
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Unity-клиент
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Установка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/connecting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Подключение
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/matchmaking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Подбор комнат
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/rooms-and-properties/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Комнаты и свойства
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/messages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Сообщения
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/network-objects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Сетевые объекты
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/rpc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RPC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/state-sync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Синхронизация состояния
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Владение
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Жизненный цикл
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/ticks-and-time/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Тики и время
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/scenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Сцены
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/components/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Компоненты
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/offline-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Офлайн-режим
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/settings-and-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Настройки и редактор
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/il2cpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IL2CPP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/analyzers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Анализаторы
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unity/low-level-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Низкоуровневый API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Сервер
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Сервер
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Запуск сервера
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Конфигурация
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Развёртывание
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Эксплуатация
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../server/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Безопасность
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Плагины
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Плагины
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Обзор
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/writing-a-plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Написание плагина
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/hooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Хуки
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/host-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API хоста
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/timers-http-background/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Таймеры, HTTP и фоновая работа
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Аутентификация
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/hot-reload/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Горячая перезагрузка
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Тестирование
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Справочник
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Справочник
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Сетевой протокол
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Сетевой протокол
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Транспорт
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Примитивы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формат сообщений
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Параметры
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#value-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Типы значений
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сессия
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Сессия">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Операции и их параметры
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ответы
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        События
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="События">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Получатели, кэш и группы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сетевые объекты
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Минимальный клиент
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../codes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Коды и ключи
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrating-from-pun/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Переход с PUN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Решение проблем
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    История изменений
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Транспорт
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Примитивы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формат сообщений
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Параметры
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#value-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Типы значений
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сессия
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Сессия">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Операции и их параметры
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ответы
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        События
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="События">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Получатели, кэш и группы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сетевые объекты
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Минимальный клиент
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Навигация" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../" class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Главная
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Справочник
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">Сетевой протокол<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>Здесь описано, что ходит между клиентом и сервером, для тех, кто пишет собственный клиент. Пользователям Unity это знать не нужно. Все числа относятся к версии протокола 1 (<code>Protocol.ProtocolVersion</code>). Имена взяты из <code>NetPulse.Common</code>, библиотеки, которая компилируется на .NET Standard 2.1 и входит в Unity-пакет. Клиент на .NET может использовать её напрямую.</p>
+<h2 id="_2">Транспорт<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>NetPulse отправляет сообщения по UDP через LiteNetLib 1.3.5. Собственный клиент обязан говорить на протоколе LiteNetLib, поэтому на практике это клиент на .NET с той же версией LiteNetLib.</p>
+<ul>
+<li>Клиент подключается к UDP-порту сервера (по умолчанию 5055) с ключом подключения (по умолчанию <code>NetPulse</code>). Ключ проверяет транспорт.</li>
+<li>Каждое сообщение NetPulse укладывается в один пакет LiteNetLib, отправленный по каналу по умолчанию.</li>
+<li>Режим доставки пакета сопоставляется с методом LiteNetLib:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><code>DeliveryMode</code></th>
+<th>Значение</th>
+<th>Метод LiteNetLib</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ReliableOrdered</code></td>
+<td>0</td>
+<td><code>ReliableOrdered</code></td>
+</tr>
+<tr>
+<td><code>ReliableUnordered</code></td>
+<td>1</td>
+<td><code>ReliableUnordered</code></td>
+</tr>
+<tr>
+<td><code>UnreliableSequenced</code></td>
+<td>2</td>
+<td><code>Sequenced</code></td>
+</tr>
+<tr>
+<td><code>Unreliable</code></td>
+<td>3</td>
+<td><code>Unreliable</code></td>
+</tr>
+</tbody>
+</table>
+<p>Ответы и большинство событий сервер отправляет через <code>ReliableOrdered</code>. События, которые поднимают клиенты или плагины, уходят с тем <code>Delivery</code>, который запросил отправитель. Pong отправляется как <code>Unreliable</code>.</p>
+<ul>
+<li>Сервер отключает пира, молчащего дольше <code>DisconnectTimeoutMs</code> (по умолчанию 10 секунд). Продолжайте вызывать <code>PollEvents</code>: он отправляет служебные keep-alive сообщения транспорта.</li>
+<li>Когда сервер отключает клиента намеренно, он кладёт причину в UTF-8 в данные отключения. Известные причины: <code>Overloaded</code> и <code>AuthenticationFailed</code>.</li>
+</ul>
+<h2 id="_3">Примитивы<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>Все многобайтовые числа хранятся в порядке little-endian.</p>
+<table>
+<thead>
+<tr>
+<th>Название</th>
+<th>Кодирование</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>byte</code>, <code>bool</code></td>
+<td>1 байт. У bool значение 0 или 1.</td>
+</tr>
+<tr>
+<td><code>short</code>, <code>ushort</code></td>
+<td>2 байта.</td>
+</tr>
+<tr>
+<td><code>int</code>, <code>uint</code>, <code>float</code></td>
+<td>4 байта.</td>
+</tr>
+<tr>
+<td><code>long</code>, <code>ulong</code>, <code>double</code></td>
+<td>8 байт.</td>
+</tr>
+<tr>
+<td><code>varuint</code></td>
+<td>По 7 бит на байт, сначала младшие, старший бит означает «далее ещё байты». Не больше 5 байт.</td>
+</tr>
+<tr>
+<td><code>string</code></td>
+<td><code>varuint</code> (число байт UTF-8 плюс 1), затем сами байты. Префикс 0 означает <code>null</code>, префикс 1 означает пустую строку.</td>
+</tr>
+<tr>
+<td><code>bytes</code></td>
+<td>Длина в <code>varuint</code>, затем байты.</td>
+</tr>
+<tr>
+<td><code>Guid</code></td>
+<td>16 байт в раскладке .NET.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">Формат сообщений<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>Первый байт каждого пакета задаёт вид сообщения.</p>
+<table>
+<thead>
+<tr>
+<th>Вид</th>
+<th>Значение</th>
+<th>Раскладка после байта вида</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OperationRequest</td>
+<td>1</td>
+<td><code>opCode: byte</code>, <code>requestId: ushort</code>, <code>parameters</code></td>
+</tr>
+<tr>
+<td>OperationResponse</td>
+<td>2</td>
+<td><code>opCode: byte</code>, <code>requestId: ushort</code>, <code>returnCode: short</code>, <code>debugMessage: string</code>, <code>parameters</code></td>
+</tr>
+<tr>
+<td>Event</td>
+<td>3</td>
+<td><code>code: byte</code>, <code>parameters</code></td>
+</tr>
+<tr>
+<td>Ping</td>
+<td>4</td>
+<td><code>clientTicks: long</code>, <code>serverTicks: long</code></td>
+</tr>
+<tr>
+<td>Pong</td>
+<td>5</td>
+<td><code>clientTicks: long</code>, <code>serverMs: long</code></td>
+</tr>
+</tbody>
+</table>
+<p>Ответ несёт <code>opCode</code> и <code>requestId</code> своего запроса. <code>returnCode</code> 0 означает успех, остальные коды перечислены в разделе <a href="../codes/">Коды и ключи</a>. <code>debugMessage</code> содержит текст для человека.</p>
+<p>В пинге отправьте свои часы в <code>clientTicks</code> и 0 в <code>serverTicks</code>. Сервер ответит вашим значением и своим временем в миллисекундах с момента запуска. Вычитанием можно оценить время кругового обхода и смещение часов.</p>
+<p>Идентификаторы запросов выбираете вы. Для каждого запроса, на который нужен ответ, берите ненулевой идентификатор. Сервер отвечает на любую операцию, кроме <code>RaiseEvent</code>: на неё ответ приходит, только если идентификатор ненулевой или событие завершилось ошибкой.</p>
+<h2 id="_5">Параметры<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p><code>parameters</code> представляет собой словарь из однобайтового ключа в значение:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>varuint count
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>count x ( key: byte, value )
+</code></pre></div>
+<p>Ключами служат константы <code>ParamKey</code>, они перечислены в разделе <a href="../codes/#parameter-keys">Коды и ключи</a>. Отсутствующие ключи читаются как значения по умолчанию. Сервер преобразует числовые типы при чтении параметра, поэтому <code>int</code> на месте <code>byte</code> сработает, если значение помещается.</p>
+<h2 id="value-types">Типы значений<a class="headerlink" href="#value-types" title="Permanent link">&para;</a></h2>
+<p>Каждое значение начинается с байта кода типа, за которым идёт полезная нагрузка.</p>
+<table>
+<thead>
+<tr>
+<th>Код</th>
+<th>Тип</th>
+<th>Нагрузка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>null</td>
+<td>нет</td>
+</tr>
+<tr>
+<td>1</td>
+<td>bool</td>
+<td>1 байт</td>
+</tr>
+<tr>
+<td>2</td>
+<td>byte</td>
+<td>1 байт</td>
+</tr>
+<tr>
+<td>3</td>
+<td>short</td>
+<td>2 байта</td>
+</tr>
+<tr>
+<td>4</td>
+<td>int</td>
+<td>4 байта</td>
+</tr>
+<tr>
+<td>5</td>
+<td>long</td>
+<td>8 байт</td>
+</tr>
+<tr>
+<td>6</td>
+<td>float</td>
+<td>4 байта</td>
+</tr>
+<tr>
+<td>7</td>
+<td>double</td>
+<td>8 байт</td>
+</tr>
+<tr>
+<td>8</td>
+<td>string</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>byte[]</td>
+<td><code>bytes</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>int[]</td>
+<td>число в <code>varuint</code>, затем по 4 байта на элемент</td>
+</tr>
+<tr>
+<td>11</td>
+<td>float[]</td>
+<td>число в <code>varuint</code>, затем по 4 байта на элемент</td>
+</tr>
+<tr>
+<td>12</td>
+<td>string[]</td>
+<td>число в <code>varuint</code>, затем столько значений <code>string</code></td>
+</tr>
+<tr>
+<td>13</td>
+<td>object[]</td>
+<td>число в <code>varuint</code>, затем столько значений</td>
+</tr>
+<tr>
+<td>14</td>
+<td>dictionary</td>
+<td>число в <code>varuint</code>, затем пары (ключ <code>string</code>, значение)</td>
+</tr>
+<tr>
+<td>15</td>
+<td>PropertyTable</td>
+<td>та же раскладка, что у словаря</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Guid</td>
+<td>16 байт</td>
+</tr>
+<tr>
+<td>17</td>
+<td>ParameterDictionary</td>
+<td>блок параметров (число, затем пары ключ и значение)</td>
+</tr>
+<tr>
+<td>18</td>
+<td>extended</td>
+<td><code>ushort</code> идентификатор, длина в <code>varuint</code>, затем нагрузка</td>
+</tr>
+<tr>
+<td>от 100 до 199</td>
+<td>пользовательский</td>
+<td>длина в <code>varuint</code>, затем нагрузка</td>
+</tr>
+</tbody>
+</table>
+<p>Вложенность значений не больше 16 уровней. Если заявленное число или длина больше оставшихся в пакете данных, пакет считается некорректным.</p>
+<p>Коды от 100 до 199 и 18 несут прикладные типы, например векторы. Перед ними стоит длина, чтобы сервер мог хранить и пересылать неизвестный ему тип: он сохраняет байты как <code>OpaqueValue</code> и записывает их обратно без изменений. Unity-пакет регистрирует <code>Vector2</code> (100), <code>Vector3</code> (101), <code>Quaternion</code> (102), <code>Color</code> (103), <code>Vector2Int</code> (104) и <code>Vector3Int</code> (105). В .NET свои типы регистрируются через <code>NetTypeRegistry.Register</code> (коды от 100 до 199) или <code>NetTypeRegistry.RegisterExtended</code> (идентификаторы от 0 до 65535).</p>
+<p>Некорректный пакет записывается в лог и игнорируется.</p>
+<h2 id="_6">Сессия<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Подключитесь с ключом подключения.</li>
+<li>Отправьте <code>Authenticate</code> (операция 1) с AppId, версией протокола, идентификатором пользователя, никнеймом и необязательным токеном. Пока это не удалось, любая другая операция возвращает <code>NotAuthenticated</code>.</li>
+<li>По желанию отправьте <code>JoinLobby</code> (операция 2). Сервер ответит и затем пришлёт полный список комнат событием 230. Следующие события 230 несут изменения (<code>IsFullList</code> равен false) с интервалом <code>RoomListIntervalMs</code>. <code>GetRoomList</code> (операция 30) возвращает полный список прямо в ответе.</li>
+<li>Создайте комнату или войдите в неё операциями 10, 11, 12 или 13. У пира может выполняться только один вход одновременно.</li>
+<li>Внутри комнаты используйте операции с 14 по 26. События приходят по мере возникновения.</li>
+</ol>
+<h3 id="_7">Операции и их параметры<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Операция</th>
+<th>Название</th>
+<th>Параметры</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Authenticate</td>
+<td><code>AppId</code> (str), <code>ProtocolVersion</code> (int), <code>AppVersion</code> (str), <code>UserId</code> (str), <code>NickName</code> (str), <code>AuthToken</code> (str), <code>AuthData</code> (PropertyTable)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>JoinLobby</td>
+<td><code>LobbyName</code> (str)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>LeaveLobby</td>
+<td>нет</td>
+</tr>
+<tr>
+<td>10</td>
+<td>CreateRoom</td>
+<td><code>RoomName</code>, <code>Options</code> (ParameterDictionary), <code>PlayerProperties</code> (PropertyTable)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>JoinRoom</td>
+<td><code>RoomName</code>, <code>PlayerProperties</code></td>
+</tr>
+<tr>
+<td>12</td>
+<td>JoinOrCreateRoom</td>
+<td>как у CreateRoom</td>
+</tr>
+<tr>
+<td>13</td>
+<td>JoinRandomRoom</td>
+<td><code>ExpectedProperties</code>, <code>ExpectedMaxPlayers</code> (byte), <code>PlayerProperties</code>, <code>Options</code> (используется, если комнату придётся создать)</td>
+</tr>
+<tr>
+<td>14</td>
+<td>LeaveRoom</td>
+<td><code>BecomeInactive</code> (bool)</td>
+</tr>
+<tr>
+<td>20</td>
+<td>RaiseEvent</td>
+<td><code>EventCode</code> (byte), <code>Data</code>, <code>Receivers</code> (byte), <code>TargetActors</code> (int[]), <code>InterestGroup</code> (byte), <code>Caching</code> (byte), <code>Delivery</code> (byte), <code>ViewId</code> (int), <code>OwnershipMode</code> (byte), <code>ObjectFlags</code> (byte)</td>
+</tr>
+<tr>
+<td>21</td>
+<td>SetRoomProperties</td>
+<td><code>Properties</code>, <code>ExpectedProperties</code>, <code>Broadcast</code> (bool, по умолчанию true)</td>
+</tr>
+<tr>
+<td>22</td>
+<td>SetPlayerProperties</td>
+<td><code>ActorId</code> (0 означает вас самого), <code>Properties</code>, <code>ExpectedProperties</code>, <code>Broadcast</code></td>
+</tr>
+<tr>
+<td>23</td>
+<td>ChangeInterestGroups</td>
+<td><code>GroupsToAdd</code> (byte[]), <code>GroupsToRemove</code> (byte[])</td>
+</tr>
+<tr>
+<td>24</td>
+<td>TransferOwnership</td>
+<td><code>ViewId</code>, <code>NewOwnerActorId</code></td>
+</tr>
+<tr>
+<td>25</td>
+<td>RequestOwnership</td>
+<td><code>ViewId</code></td>
+</tr>
+<tr>
+<td>26</td>
+<td>RegisterSceneObjects</td>
+<td><code>ViewIds</code> (int[]), <code>OwnershipModes</code> (byte[])</td>
+</tr>
+<tr>
+<td>30</td>
+<td>GetRoomList</td>
+<td>нет</td>
+</tr>
+</tbody>
+</table>
+<p><code>Options</code> при создании комнаты передаётся блоком параметров с полями <code>MaxPlayers</code> (byte, 0 означает без ограничения), <code>IsVisible</code>, <code>IsOpen</code>, <code>Properties</code> (начальные пользовательские свойства комнаты), <code>LobbyProperties</code> (string[] ключей свойств, которые показываются в списке комнат), <code>Plugin</code>, <code>PlayerTtlMs</code> и <code>EmptyRoomTtlMs</code>.</p>
+<p><code>PlayerTtlMs</code> и <code>EmptyRoomTtlMs</code> задаются в миллисекундах. При <code>PlayerTtlMs</code>, отличном от 0, игрок, который отключился или вышел с <code>BecomeInactive</code>, остаётся в комнате неактивным актёром и может вернуться с тем же <code>UserId</code>. Положительное значение удаляет неактивного игрока через это время, отрицательное хранит его до возвращения. Положительный <code>EmptyRoomTtlMs</code> удерживает пустую комнату живой на это время.</p>
+<h3 id="_8">Ответы<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<p>Успешный <code>Authenticate</code> возвращает <code>UserId</code>, <code>NickName</code>, <code>ServerTimeTicks</code> (миллисекунды с запуска сервера, несмотря на название) и <code>ProtocolVersion</code>.</p>
+<p>Операции входа (с 10 по 13) отвечают состоянием комнаты либо кодом ошибки без параметров:</p>
+<table>
+<thead>
+<tr>
+<th>Ключ</th>
+<th>Содержимое</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RoomName</code></td>
+<td>Имя комнаты.</td>
+</tr>
+<tr>
+<td><code>ActorId</code></td>
+<td>Ваш идентификатор актёра.</td>
+</tr>
+<tr>
+<td><code>MasterClientId</code></td>
+<td>Идентификатор актёра мастера.</td>
+</tr>
+<tr>
+<td><code>Players</code></td>
+<td><code>object[]</code> блоков параметров, по одному на актёра: <code>ActorId</code>, <code>NickName</code>, <code>UserId</code>, <code>Properties</code>, <code>IsInactive</code>.</td>
+</tr>
+<tr>
+<td><code>RoomProperties</code></td>
+<td>Свойства комнаты, включая зарезервированные ключи.</td>
+</tr>
+<tr>
+<td><code>ServerTimeTicks</code></td>
+<td>Миллисекунды сервера.</td>
+</tr>
+<tr>
+<td><code>MaxPlayers</code>, <code>IsOpen</code>, <code>IsVisible</code></td>
+<td>Настройки комнаты.</td>
+</tr>
+<tr>
+<td><code>IsRejoin</code></td>
+<td>Истина, если вы заняли место неактивного актёра.</td>
+</tr>
+<tr>
+<td><code>TickRate</code></td>
+<td>Настройка <code>TickRate</code> сервера.</td>
+</tr>
+</tbody>
+</table>
+<p>После ответа на вход сервер присылает кэшированные события, затем событие <code>OwnershipChanged</code> для каждого объекта, чей владелец отличается от создателя. Остальные игроки получают <code>PlayerJoined</code> с блоком вашего игрока.</p>
+<h2 id="_9">События<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
+<p>Событие несёт код и блок параметров. Коды до 199 отведены под ваши события, а объектные события с 240 по 245 тоже поднимают клиенты. Они приходят с такой нагрузкой:</p>
+<table>
+<thead>
+<tr>
+<th>Ключ</th>
+<th>Содержимое</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Sender</code></td>
+<td>Идентификатор актёра-отправителя (0 для сервера).</td>
+</tr>
+<tr>
+<td><code>Data</code></td>
+<td>Значение, которое передал отправитель.</td>
+</tr>
+<tr>
+<td><code>ViewId</code></td>
+<td>View id, если он есть.</td>
+</tr>
+</tbody>
+</table>
+<p>У собственных событий сервера нагрузка другая:</p>
+<table>
+<thead>
+<tr>
+<th>Код</th>
+<th>Название</th>
+<th>Ключи нагрузки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>230</td>
+<td>RoomList</td>
+<td><code>IsFullList</code>, <code>Rooms</code> (<code>object[]</code> блоков с <code>RoomName</code>, <code>PlayerCount</code>, <code>MaxPlayers</code>, <code>IsOpen</code>, <code>Properties</code>), <code>RemovedRooms</code> (string[])</td>
+</tr>
+<tr>
+<td>231</td>
+<td>PlayerJoined</td>
+<td>блок игрока</td>
+</tr>
+<tr>
+<td>232</td>
+<td>PlayerLeft</td>
+<td><code>ActorId</code>, <code>IsInactive</code>, <code>MasterClientId</code></td>
+</tr>
+<tr>
+<td>233</td>
+<td>RoomPropertiesChanged</td>
+<td><code>ActorId</code> (0), <code>Properties</code> (дельта, значение null означает удаление), <code>Sender</code></td>
+</tr>
+<tr>
+<td>234</td>
+<td>PlayerPropertiesChanged</td>
+<td><code>ActorId</code>, <code>Properties</code>, <code>Sender</code></td>
+</tr>
+<tr>
+<td>235</td>
+<td>MasterClientChanged</td>
+<td><code>MasterClientId</code></td>
+</tr>
+<tr>
+<td>236</td>
+<td>OwnershipChanged</td>
+<td><code>ViewId</code>, <code>NewOwnerActorId</code> (0 у сценового объекта означает «мастер»), <code>Sender</code></td>
+</tr>
+<tr>
+<td>237</td>
+<td>OwnershipRequested</td>
+<td><code>ViewId</code>, <code>RequesterActorId</code>, отправляется владельцу</td>
+</tr>
+<tr>
+<td>250</td>
+<td>ErrorInfo</td>
+<td><code>ErrorCode</code>, <code>Message</code></td>
+</tr>
+</tbody>
+</table>
+<p>Изменения свойств комнаты и игроков идут всем игрокам, включая того, кто их сделал.</p>
+<h3 id="_10">Получатели, кэш и группы<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<p><code>Receivers</code>: 0 Others, 1 All, 2 MasterClient или 3 Targets (идентификаторы актёров из <code>TargetActors</code>). Ненулевая <code>InterestGroup</code> ограничивает доставку игроками, которые вошли в эту группу через <code>ChangeInterestGroups</code>; группа 0 доходит до всех.</p>
+<p><code>Caching</code>: 0 DoNotCache, 1 AddToRoomCache, 2 AddToRoomCacheGlobal, 3 RemoveFromRoomCache или 4 RemoveFromCacheForActorsLeft. Кэшированные события воспроизводятся игрокам, которые входят позже. События <code>AddToRoomCache</code> удаляются, когда их отправитель уходит окончательно, а события <code>AddToRoomCacheGlobal</code> остаются. Удаление из кэша убирает записи с тем же кодом события и тем же <code>ViewId</code>, если вы его передали.</p>
+<h3 id="_11">Сетевые объекты<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h3>
+<p>Объектные события передаются обычными вызовами <code>RaiseEvent</code> со специальным кодом и <code>ViewId</code>. Сервер проверяет их так, как описано в разделе <a href="../../server/security/#ownership-validation">Безопасность</a>: для создания (240) нужно, чтобы <code>ViewId / 1000</code> равнялось вашему идентификатору актёра, а режим передаётся в <code>OwnershipMode</code> (0 Fixed, 1 Takeover, 2 Request); бит 0 в <code>ObjectFlags</code> помечает объект, который переживает смену сцены. Удаление (241) убирает объект и его кэшированные события. RPC (242), синхронизация состояния (243), сообщение (244) и мастерская sync-переменная (245) пересылаются после своих проверок. Формат <code>Data</code> у этих событий определяет клиент, для сервера он непрозрачен.</p>
+<p>Когда меняется свойство комнаты <code>_scene</code>, сервер удаляет все сценовые объекты и все объекты, не помеченные как постоянные, вместе с их кэшированными событиями.</p>
+<h2 id="_12">Минимальный клиент<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h2>
+<p>Эта программа на .NET подключается, аутентифицируется и входит в комнату с помощью <code>NetPulse.Common</code> и LiteNetLib 1.3.5:</p>
+<div class="highlight"><span class="filename">WireClient.csproj</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">&lt;Project</span><span class="w"> </span><span class="na">Sdk=</span><span class="s">"Microsoft.NET.Sdk"</span><span class="nt">&gt;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&lt;PropertyGroup&gt;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">&lt;OutputType&gt;</span>Exe<span class="nt">&lt;/OutputType&gt;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">&lt;TargetFramework&gt;</span>net10.0<span class="nt">&lt;/TargetFramework&gt;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">&lt;ImplicitUsings&gt;</span>enable<span class="nt">&lt;/ImplicitUsings&gt;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">&lt;Nullable&gt;</span>enable<span class="nt">&lt;/Nullable&gt;</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="nt">&lt;/PropertyGroup&gt;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="nt">&lt;ItemGroup&gt;</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"LiteNetLib"</span><span class="w"> </span><span class="na">Version=</span><span class="s">"1.3.5"</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">&lt;ProjectReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"path\to\NetPulse_Server\src\NetPulse.Common\NetPulse.Common.csproj"</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="nt">&lt;/ItemGroup&gt;</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="nt">&lt;/Project&gt;</span>
+</code></pre></div>
+<div class="highlight"><span class="filename">MinimalClient.cs</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">LiteNetLib</span><span class="p">;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse.Common</span><span class="p">;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">WireExamples</span><span class="p">;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MinimalClient</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">{</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">NetWriter</span><span class="w"> </span><span class="n">_writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">EventBasedNetListener</span><span class="w"> </span><span class="n">_listener</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">NetManager</span><span class="w"> </span><span class="n">_manager</span><span class="p">;</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NetPeer</span><span class="o">?</span><span class="w"> </span><span class="n">_server</span><span class="p">;</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">ushort</span><span class="w"> </span><span class="n">_nextRequestId</span><span class="p">;</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">MinimalClient</span><span class="p">()</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">        </span><span class="n">_manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NetManager</span><span class="p">(</span><span class="n">_listener</span><span class="p">);</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">        </span><span class="n">_listener</span><span class="p">.</span><span class="n">PeerConnectedEvent</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnConnected</span><span class="p">;</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">        </span><span class="n">_listener</span><span class="p">.</span><span class="n">NetworkReceiveEvent</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnReceive</span><span class="p">;</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Run</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="n">TimeSpan</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">        </span><span class="n">_manager</span><span class="p">.</span><span class="n">Start</span><span class="p">();</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">        </span><span class="n">_manager</span><span class="p">.</span><span class="n">Connect</span><span class="p">(</span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">DefaultConnectionKey</span><span class="p">);</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">end</span><span class="p">)</span>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">            </span><span class="n">_manager</span><span class="p">.</span><span class="n">PollEvents</span><span class="p">();</span>
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">            </span><span class="n">Thread</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
+<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">        </span><span class="n">_manager</span><span class="p">.</span><span class="n">Stop</span><span class="p">();</span>
+<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>
+<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnConnected</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">)</span>
+<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">        </span><span class="n">_server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">;</span>
+<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">login</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AuthenticateRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"demo"</span><span class="p">,</span><span class="w"> </span><span class="n">NickName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Demo"</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="w">        </span><span class="n">Send</span><span class="p">(</span><span class="n">OpCode</span><span class="p">.</span><span class="n">Authenticate</span><span class="p">,</span><span class="w"> </span><span class="n">login</span><span class="p">.</span><span class="n">ToParameters</span><span class="p">());</span>
+<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>
+<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="kt">byte</span><span class="w"> </span><span class="n">opCode</span><span class="p">,</span><span class="w"> </span><span class="n">ParameterDictionary</span><span class="w"> </span><span class="n">parameters</span><span class="p">)</span>
+<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">OperationRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">OpCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">opCode</span><span class="p">,</span><span class="w"> </span><span class="n">RequestId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">++</span><span class="n">_nextRequestId</span><span class="p">,</span><span class="w"> </span><span class="n">Parameters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">Serialize</span><span class="p">(</span><span class="n">_writer</span><span class="p">,</span><span class="w"> </span><span class="n">request</span><span class="p">);</span>
+<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="w">        </span><span class="n">_server</span><span class="o">!</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">packet</span><span class="p">.</span><span class="n">Array</span><span class="o">!</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">Offset</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">Count</span><span class="p">,</span><span class="w"> </span><span class="n">DeliveryMethod</span><span class="p">.</span><span class="n">ReliableOrdered</span><span class="p">);</span>
+<a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>
+<a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnReceive</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="kt">byte</span><span class="w"> </span><span class="n">channel</span><span class="p">,</span><span class="w"> </span><span class="n">DeliveryMethod</span><span class="w"> </span><span class="n">method</span><span class="p">)</span>
+<a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NetReader</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytesSegment</span><span class="p">());</span>
+<a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">ReadKind</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+<a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>
+<a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MessageKind</span><span class="p">.</span><span class="n">OperationResponse</span><span class="p">)</span>
+<a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a><span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">ReadOperationResponse</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+<a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a><span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"response op={response.OpCode} request={response.RequestId} code={response.ReturnCode}"</span><span class="p">);</span>
+<a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a>
+<a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">OpCode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">OpCode</span><span class="p">.</span><span class="n">Authenticate</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">ReturnCode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ReturnCode</span><span class="p">.</span><span class="n">Ok</span><span class="p">)</span>
+<a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="w">            </span><span class="p">{</span>
+<a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a><span class="w">                </span><span class="n">Send</span><span class="p">(</span><span class="n">OpCode</span><span class="p">.</span><span class="n">JoinOrCreateRoom</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JoinOrCreateRoomRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RoomName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"wire-demo"</span><span class="w"> </span><span class="p">}.</span><span class="n">ToParameters</span><span class="p">());</span>
+<a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a><span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MessageKind</span><span class="p">.</span><span class="n">Event</span><span class="p">)</span>
+<a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a><span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">received</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">ReadEvent</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+<a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a><span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"event code={received.Code}"</span><span class="p">);</span>
+<a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a>
+<a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a><span class="w">        </span><span class="n">reader</span><span class="p">.</span><span class="n">Recycle</span><span class="p">();</span>
+<a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a><span class="p">}</span>
+</code></pre></div>
+<p>Запустите её из файла верхнего уровня <code>Program.cs</code>:</p>
+<div class="highlight"><span class="filename">Program.cs</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">WireExamples</span><span class="p">;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">new</span><span class="w"> </span><span class="nf">MinimalClient</span><span class="p">().</span><span class="n">Run</span><span class="p">(</span><span class="s">"127.0.0.1"</span><span class="p">,</span><span class="w"> </span><span class="mi">5055</span><span class="p">,</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+</code></pre></div>
+<p>Если запустить её против работающего сервера, она печатает:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>response op=1 request=1 code=0
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>response op=12 request=2 code=0
+</code></pre></div>
+<p><code>Protocol.Serialize</code> возвращает сегмент внутреннего буфера записи, поэтому отправляйте его раньше, чем снова используете writer.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Нижний колонтитул" >
+        
+          
+          <a href="../../plugins/testing/" class="md-footer__link md-footer__link--prev" aria-label="Назад: Тестирование">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Назад
+              </span>
+              <div class="md-ellipsis">
+                Тестирование
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../codes/" class="md-footer__link md-footer__link--next" aria-label="Вперед: Коды и ключи">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Вперед
+              </span>
+              <div class="md-ellipsis">
+                Коды и ключи
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "navigation.path", "toc.follow", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>
