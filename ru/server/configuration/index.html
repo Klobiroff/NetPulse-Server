@@ -1139,6 +1139,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шифрование
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Лимиты
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1821,6 +1843,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шифрование
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Лимиты
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2032,6 +2076,158 @@
 </tr>
 </tbody>
 </table>
+<h2 id="encryption">Шифрование<a class="headerlink" href="#encryption" title="Permanent link">&para;</a></h2>
+<p>Шифрование транспорта настраивается в <code>NetPulse:Encryption</code>. Значение по умолчанию <code>Disabled</code> ничего не устанавливает и оставляет формат на проводе прежним. Что означают режимы — в разделе <a href="../security/#transport-encryption">Безопасность</a>, как менять ключи — в разделе <a href="../deployment/#rotating-the-server-key">Развёртывание</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Ключ</th>
+<th>По умолчанию</th>
+<th>Действие</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NetPulse:Encryption:Mode</code></td>
+<td><code>Disabled</code></td>
+<td><code>Disabled</code>, <code>Optional</code> (открытые и шифрованные клиенты) или <code>Required</code> (только шифрованные). При <code>Optional</code> и <code>Required</code> сервер не запустится без корректного приватного ключа.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:PrivateKeyFile</code></td>
+<td>пусто</td>
+<td>Файл с приватным ключом в Base64, созданный командой <code>NetPulse.Server keygen</code>. Относительный путь считается от папки с бинарником сервера. Используйте его или переменную <code>NETPULSE_SERVER_PRIVATE_KEY</code>, но не оба сразу.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:PreviousPrivateKeyFiles</code></td>
+<td>пустой список</td>
+<td>Выведенные из обращения приватные ключи, которые ещё принимаются, чтобы клиенты с закреплённым старым публичным ключом работали во время ротации.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:PreSharedKey</code></td>
+<td>пусто</td>
+<td>Необязательный ключ в Base64 (32 байта), который должен быть и у каждого клиента.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:PreSharedKeyFile</code></td>
+<td>пусто</td>
+<td>То же, но из файла. Задавайте не больше одного из двух.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:RequireCookie</code></td>
+<td><code>true</code></td>
+<td>Требовать от клиента вернуть cookie, прежде чем сервер начнёт обмен ключами. Отключайте только в закрытой сети: без этого пропадает защита от подмены отправителя.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:CookieLifetimeMs</code></td>
+<td><code>30000</code></td>
+<td>Как часто меняется секрет cookie (предыдущий тоже принимается). Не меньше 1000.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:RekeyAfterPackets</code></td>
+<td><code>1000000</code></td>
+<td>Менять ключ отправки после стольких пакетов. <code>0</code> выключает условие по пакетам.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:RekeyAfterMs</code></td>
+<td><code>600000</code></td>
+<td>Менять ключ отправки по прошествии стольких миллисекунд. <code>0</code> выключает условие по времени.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:ReplayWindow</code></td>
+<td><code>4096</code></td>
+<td>Размер окна защиты от повтора в пакетах. Кратно 64, от 64 до 65536.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:SessionIdleTimeoutMs</code></td>
+<td><code>30000</code></td>
+<td>Сессия, в которой столько времени не было корректных пакетов, удаляется, а её пир отключается. Не меньше 1000.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:ReplaceIdleMs</code></td>
+<td><code>3000</code></td>
+<td>Сколько сессия должна молчать, чтобы новое рукопожатие с того же адреса могло её заменить.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:HandshakeTimeoutMs</code></td>
+<td><code>5000</code></td>
+<td>Сколько хранится незавершённое рукопожатие. Не меньше 500.</td>
+</tr>
+<tr>
+<td><code>NetPulse:Encryption:PaddingBlock</code></td>
+<td><code>0</code></td>
+<td>Дополнять каждую исходящую запись до кратной этому числу байтов длины. <code>0</code> — выключено, иначе от 16 до 512.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="limits">Лимиты<a class="headerlink" href="#limits" title="Permanent link">&para;</a></h2>
+<p>Секция <code>NetPulse:Security</code> содержит лимиты против злоупотреблений. <code>0</code> выключает лимит. Смысл каждого ключа, значение по умолчанию и последствия нарушения указаны в таблице раздела <a href="../security/#limits-for-connected-clients">Безопасность</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Ключ</th>
+<th>По умолчанию</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MaxConnectionsPerIp</code></td>
+<td><code>32</code></td>
+</tr>
+<tr>
+<td><code>ConnectionAttemptsPerIpPerSecond</code></td>
+<td><code>20</code></td>
+</tr>
+<tr>
+<td><code>HandshakesPerIpPerSecond</code></td>
+<td><code>10</code></td>
+</tr>
+<tr>
+<td><code>MaxHandshakesPerSecond</code></td>
+<td><code>2000</code></td>
+</tr>
+<tr>
+<td><code>AuthDeadlineMs</code></td>
+<td><code>10000</code></td>
+</tr>
+<tr>
+<td><code>MaxAuthAttempts</code></td>
+<td><code>5</code></td>
+</tr>
+<tr>
+<td><code>MaxMessagesPerSecond</code> / <code>MessageBurst</code></td>
+<td><code>1000</code> / <code>2000</code></td>
+</tr>
+<tr>
+<td><code>MaxBytesPerSecond</code> / <code>ByteBurst</code></td>
+<td><code>1048576</code> / <code>2097152</code></td>
+</tr>
+<tr>
+<td><code>MaxMessageBytes</code></td>
+<td><code>262144</code></td>
+</tr>
+<tr>
+<td><code>MaxUserIdLength</code> / <code>MaxNickNameLength</code> / <code>MaxAuthTokenLength</code></td>
+<td><code>128</code> / <code>64</code> / <code>8192</code></td>
+</tr>
+<tr>
+<td><code>MaxRoomNameLength</code></td>
+<td><code>128</code></td>
+</tr>
+<tr>
+<td><code>MaxPropertiesPerRoom</code> / <code>MaxPropertyBytes</code></td>
+<td><code>256</code> / <code>16384</code></td>
+</tr>
+<tr>
+<td><code>MaxCachedEventsPerRoom</code> / <code>MaxTargetActors</code></td>
+<td><code>4096</code> / <code>256</code></td>
+</tr>
+<tr>
+<td><code>RequireRejoinToken</code></td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<p>Отрицательное значение не даст серверу запуститься.</p>
 <h2 id="_4">Консоль<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2133,26 +2329,37 @@
 <a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="nt">"RoomQueueCapacity"</span><span class="p">:</span><span class="w"> </span><span class="mi">4096</span><span class="p">,</span>
 <a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="nt">"OwnershipRequestTimeoutMs"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
 <a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="nt">"ShutdownTimeoutMs"</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="nt">"EnableConsole"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="nt">"Plugins"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">      </span><span class="nt">"Directory"</span><span class="p">:</span><span class="w"> </span><span class="s2">"plugins"</span><span class="p">,</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">      </span><span class="nt">"Default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyPlugin"</span><span class="p">,</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">      </span><span class="nt">"Auth"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AuthSample"</span><span class="p">,</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">      </span><span class="nt">"HotReload"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">      </span><span class="nt">"HookTimeoutMs"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">      </span><span class="nt">"AuthTimeoutMs"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">      </span><span class="nt">"Settings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">        </span><span class="nt">"AuthSample"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">          </span><span class="nt">"Mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hmac"</span><span class="p">,</span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">          </span><span class="nt">"Secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"change-me-long-random-string"</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">        </span><span class="p">},</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">        </span><span class="nt">"MyPlugin"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">          </span><span class="nt">"Greeting"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Welcome"</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">        </span><span class="p">}</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">      </span><span class="p">}</span>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="p">}</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="nt">"Encryption"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">      </span><span class="nt">"Mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Required"</span><span class="p">,</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">      </span><span class="nt">"PrivateKeyFile"</span><span class="p">:</span><span class="w"> </span><span class="s2">"server.key"</span><span class="p">,</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">      </span><span class="nt">"PaddingBlock"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">    </span><span class="nt">"Security"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">      </span><span class="nt">"MaxConnectionsPerIp"</span><span class="p">:</span><span class="w"> </span><span class="mi">32</span><span class="p">,</span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">      </span><span class="nt">"MaxMessagesPerSecond"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">      </span><span class="nt">"MaxMessageBytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">262144</span><span class="p">,</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">      </span><span class="nt">"RequireRejoinToken"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">    </span><span class="nt">"EnableConsole"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">    </span><span class="nt">"Plugins"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">      </span><span class="nt">"Directory"</span><span class="p">:</span><span class="w"> </span><span class="s2">"plugins"</span><span class="p">,</span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">      </span><span class="nt">"Default"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyPlugin"</span><span class="p">,</span>
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">      </span><span class="nt">"Auth"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AuthSample"</span><span class="p">,</span>
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">      </span><span class="nt">"HotReload"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">      </span><span class="nt">"HookTimeoutMs"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">      </span><span class="nt">"AuthTimeoutMs"</span><span class="p">:</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span>
+<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w">      </span><span class="nt">"Settings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="w">        </span><span class="nt">"AuthSample"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="w">          </span><span class="nt">"Mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hmac"</span><span class="p">,</span>
+<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="w">          </span><span class="nt">"Secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"change-me-long-random-string"</span>
+<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w">        </span><span class="p">},</span>
+<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">        </span><span class="nt">"MyPlugin"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="w">          </span><span class="nt">"Greeting"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Welcome"</span>
+<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w">      </span><span class="p">}</span>
+<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a><span class="p">}</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

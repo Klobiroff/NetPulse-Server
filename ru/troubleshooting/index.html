@@ -1682,6 +1682,39 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#securehandshaketimeout-securehandshakefailed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Подключение завершается с SecureHandshakeTimeout или SecureHandshakeFailed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invalidconfiguration-104" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Подключение завершается с InvalidConfiguration (-104)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ratelimited-authtimeout-toomanyauthattempts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сервер отключает клиента с RateLimited, AuthTimeout или TooManyAuthAttempts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cannot-connect-while-invalidstate" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1986,6 +2019,39 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#securehandshaketimeout-securehandshakefailed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Подключение завершается с SecureHandshakeTimeout или SecureHandshakeFailed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invalidconfiguration-104" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Подключение завершается с InvalidConfiguration (-104)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ratelimited-authtimeout-toomanyauthattempts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сервер отключает клиента с RateLimited, AuthTimeout или TooManyAuthAttempts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cannot-connect-while-invalidstate" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2251,7 +2317,7 @@
 <tr>
 <td><code>VersionMismatch</code> (-30)</td>
 <td>Клиент и сервер используют разные версии протокола</td>
-<td>Обновите пакет или сервер, чтобы обе стороны были версии 0.3</td>
+<td>Обновите пакет или сервер, чтобы обе стороны были версии 0.4</td>
 </tr>
 <tr>
 <td><code>AuthenticationFailed</code> (-32)</td>
@@ -2260,6 +2326,20 @@
 </tr>
 </tbody>
 </table>
+<h3 id="securehandshaketimeout-securehandshakefailed">Подключение завершается с SecureHandshakeTimeout или SecureHandshakeFailed<a class="headerlink" href="#securehandshaketimeout-securehandshakefailed" title="Permanent link">&para;</a></h3>
+<p>Они появляются только при <code>Encryption Mode</code> = <code>Required</code>. Сервер на плохое рукопожатие намеренно не отвечает ничем, поэтому неверный ключ выглядит как тайм-аут. Проверьте по порядку:</p>
+<ol>
+<li>Сервер работает с <code>NetPulse:Encryption:Mode</code> в <code>Optional</code> или <code>Required</code>. Шифрующий клиент против сервера в режиме <code>Disabled</code> всегда получает тайм-аут.</li>
+<li>В <code>Server Public Keys</code> лежит ключ, напечатанный <code>NetPulse.Server keygen</code> для того приватного ключа, который сервер действительно использует (публичный ключ сервер пишет в лог при запуске). После ротации ключа сервера выпустите сборку с новым ключом.</li>
+<li>Предварительно разделённый ключ задан с обеих сторон или ни с одной, и значения совпадают.</li>
+<li><code>Encryption:HandshakeTimeoutMs</code> на сервере не меньше времени, которое нужно первым пакетам.</li>
+<li>По дороге никто не отбрасывает и не переписывает UDP-пакеты (файрвол с инспекцией, прокси).</li>
+</ol>
+<p><code>SecureHandshakeFailed</code> означает, что ответы приходили, но проверку не прошли, или что сессия достигла предела счётчика. Повторное подключение начинает новую сессию.</p>
+<h3 id="invalidconfiguration-104">Подключение завершается с InvalidConfiguration (-104)<a class="headerlink" href="#invalidconfiguration-104" title="Permanent link">&para;</a></h3>
+<p><code>Encryption Mode</code> равен <code>Required</code>, но корректного ключа нет: <code>Server Public Keys</code> пуст или ключ не является строкой Base64 длиной 32 байта. В консоли Unity указано, какой именно. То же сообщение показывают <code>Project Settings &gt; NetPulse</code> и Hub.</p>
+<h3 id="ratelimited-authtimeout-toomanyauthattempts">Сервер отключает клиента с RateLimited, AuthTimeout или TooManyAuthAttempts<a class="headerlink" href="#ratelimited-authtimeout-toomanyauthattempts" title="Permanent link">&para;</a></h3>
+<p>Клиент нарушил лимит из <code>NetPulse:Security</code>: слишком много сообщений или байтов в секунду, сообщение больше <code>MaxMessageBytes</code>, нет аутентификации за <code>AuthDeadlineMs</code> или больше <code>MaxAuthAttempts</code> неудачных аутентификаций. Отправляйте реже, разбивайте крупные данные или поднимите лимит на сервере. См. <a href="../server/security/#limits-for-connected-clients">Безопасность</a>.</p>
 <h3 id="cannot-connect-while-invalidstate">«Cannot connect while ...» или InvalidState<a class="headerlink" href="#cannot-connect-while-invalidstate" title="Permanent link">&para;</a></h3>
 <p><code>Connect()</code> работает только в состоянии <code>Disconnected</code>, а вход в комнату только из <code>Connected</code> или <code>InLobby</code>. Дождитесь предыдущей операции или сначала вызовите <code>Pulse.Disconnect()</code>. Где сейчас клиент, показывает <code>Pulse.State</code>.</p>
 <h3 id="_3">Соединение рвётся, когда игра подвисает или теряет фокус<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>

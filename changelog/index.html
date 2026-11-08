@@ -1673,6 +1673,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#040-2026-11-08" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.4.0 (2026-11-08)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#030-2026-11-06" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1740,6 +1751,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#040-2026-11-08" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.4.0 (2026-11-08)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#030-2026-11-06" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1801,7 +1823,34 @@
 
 
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
-<p>Changes to the server, the plugin SDK and the shared protocol library (<code>NetPulse.Common</code>). The Unity package keeps its own list: see the <a href="https://github.com/Klobiroff/NetPulse-Unity/blob/main/Packages/com.netpulse.unity/CHANGELOG.md">Unity package changelog</a>. A client of version 0.3 needs a 0.3 server.</p>
+<p>Changes to the server, the plugin SDK and the shared protocol library (<code>NetPulse.Common</code>). The Unity package keeps its own list: see the <a href="https://github.com/Klobiroff/NetPulse-Unity/blob/main/Packages/com.netpulse.unity/CHANGELOG.md">Unity package changelog</a>. A client of version 0.4 needs a 0.4 server.</p>
+<h2 id="040-2026-11-08">0.4.0 (2026-11-08)<a class="headerlink" href="#040-2026-11-08" title="Permanent link">&para;</a></h2>
+<p>Transport encryption and server hardening. A 0.4 client needs a 0.4 server. With the default <code>Encryption:Mode</code> of <code>Disabled</code> the wire format of 0.3 is unchanged, and a 0.3 client still connects.</p>
+<p>Encryption:</p>
+<ul>
+<li>The whole UDP stream, including LiteNetLib's headers, acknowledgements and disconnect messages, can be encrypted and authenticated. The algorithms are fixed: X25519 with the server's pinned key through the Noise pattern <code>NK</code> (<code>NKpsk0</code> with a pre-shared key), ChaCha20-Poly1305 records and SHA-256/HKDF. Nothing is negotiated.</li>
+<li><code>NetPulse:Encryption</code>: <code>Mode</code> (<code>Disabled</code>, <code>Optional</code>, <code>Required</code>), <code>PrivateKeyFile</code> or <code>NETPULSE_SERVER_PRIVATE_KEY</code>, <code>PreviousPrivateKeyFiles</code> for key rotation, <code>PreSharedKey</code> and <code>PreSharedKeyFile</code>, <code>RequireCookie</code>, <code>CookieLifetimeMs</code>, <code>RekeyAfterPackets</code>, <code>RekeyAfterMs</code>, <code>ReplayWindow</code>, <code>SessionIdleTimeoutMs</code>, <code>ReplaceIdleMs</code>, <code>HandshakeTimeoutMs</code> and <code>PaddingBlock</code>. The server refuses to start in <code>Optional</code> or <code>Required</code> mode without a valid key.</li>
+<li><code>NetPulse.Server keygen [--out file] [--force]</code> creates a private key file and prints the public key.</li>
+<li>A cookie exchange runs before any key agreement and every handshake reply is shorter than its request, so the server cannot be used to amplify traffic. A session can be replaced from the same address only after it has been silent for <code>ReplaceIdleMs</code>, and the old peer is disconnected first, so a new session never inherits an authenticated peer.</li>
+<li><code>NetPulse.Common.Security</code>: managed, constant-time X25519 and ChaCha20-Poly1305 without allocations on the packet path, the Noise handshake, cookies, the replay window, record protection with rekeying, and the client and server cores. They are checked against the RFC 7748, 8439 and 5869 vectors and against BouncyCastle, the BCL and an independent Noise implementation, in the test projects only.</li>
+<li>Plugin SDK: <code>AuthRequest.IsEncrypted</code> and <code>AuthRequest.ChannelBinding</code> (the 32-byte handshake hash), <code>IActor.IsEncrypted</code>.</li>
+<li>Metrics <code>netpulse.handshakes_ok</code>, <code>handshakes_failed</code>, <code>handshakes_rate_limited</code>, <code>cookies_sent</code>, <code>decrypt_failures</code>, <code>replays</code>, <code>rekeys</code> and <code>plaintext_rejected</code>.</li>
+<li><code>NetPulse.TestClient</code> can encrypt: <code>--encrypt --server-public-key KEY [--psk KEY] [--padding N]</code>.</li>
+</ul>
+<p>Limits (<code>NetPulse:Security</code>, <code>0</code> turns a limit off):</p>
+<ul>
+<li>Per address: <code>MaxConnectionsPerIp</code>, <code>ConnectionAttemptsPerIpPerSecond</code>, <code>HandshakesPerIpPerSecond</code>; server-wide <code>MaxHandshakesPerSecond</code>. They also work without encryption where they apply.</li>
+<li>Per peer: <code>AuthDeadlineMs</code>, <code>MaxAuthAttempts</code>, token buckets <code>MaxMessagesPerSecond</code>/<code>MessageBurst</code> and <code>MaxBytesPerSecond</code>/<code>ByteBurst</code>, and <code>MaxMessageBytes</code>. A violation disconnects the peer with the reason <code>RateLimited</code>, <code>AuthTimeout</code> or <code>TooManyAuthAttempts</code>.</li>
+<li>Sizes: <code>MaxUserIdLength</code>, <code>MaxNickNameLength</code>, <code>MaxAuthTokenLength</code>, <code>MaxRoomNameLength</code>, <code>MaxPropertiesPerRoom</code>, <code>MaxPropertyBytes</code>, <code>MaxCachedEventsPerRoom</code>, <code>MaxTargetActors</code>. A request over a limit is refused with <code>InvalidRequest</code>, it is not truncated. Control characters are refused in user ids, nicknames and room names, and removed from text before it is logged.</li>
+<li><code>RequireRejoinToken</code>: the server issues a random token on every join and demands it when an inactive player returns, so another client with the same <code>UserId</code> cannot take the seat. New protocol field <code>RejoinToken</code> (<code>ParamKey</code> 56).</li>
+<li><code>NetReader</code> refuses more than 4096 nested containers in one message.</li>
+<li>New metrics <code>netpulse.peers_rate_limited</code>, <code>connections_rejected</code>, <code>auth_timeouts</code> and <code>limit_violations</code>.</li>
+</ul>
+<p>Fixes:</p>
+<ul>
+<li>A client that joined the lobby could receive a stale room list delta right after the full list. The lobby now flushes pending deltas before it adds a subscriber.</li>
+</ul>
+<p>Tests: 292 in total, 112 for Common, 34 for the generators and 146 for the server. The new tests include end-to-end runs over real UDP in <code>Disabled</code>, <code>Optional</code> and <code>Required</code> mode through a recording proxy, with replayed, modified, held and dropped datagrams.</p>
 <h2 id="030-2026-11-06">0.3.0 (2026-11-06)<a class="headerlink" href="#030-2026-11-06" title="Permanent link">&para;</a></h2>
 <p>Support for the lighter Unity API and the source generator.</p>
 <p>Protocol and <code>NetPulse.Common</code>:</p>

@@ -1682,6 +1682,39 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#connect-fails-with-securehandshaketimeout-or-securehandshakefailed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connect fails with SecureHandshakeTimeout or SecureHandshakeFailed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connect-fails-with-invalidconfiguration-104" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connect fails with InvalidConfiguration (-104)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-server-disconnects-the-client-with-ratelimited-authtimeout-or-toomanyauthattempts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The server disconnects the client with RateLimited, AuthTimeout or TooManyAuthAttempts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cannot-connect-while-or-invalidstate" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1986,6 +2019,39 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#connect-fails-with-securehandshaketimeout-or-securehandshakefailed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connect fails with SecureHandshakeTimeout or SecureHandshakeFailed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connect-fails-with-invalidconfiguration-104" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connect fails with InvalidConfiguration (-104)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-server-disconnects-the-client-with-ratelimited-authtimeout-or-toomanyauthattempts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The server disconnects the client with RateLimited, AuthTimeout or TooManyAuthAttempts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cannot-connect-while-or-invalidstate" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2251,7 +2317,7 @@
 <tr>
 <td><code>VersionMismatch</code> (-30)</td>
 <td>Client and server speak different protocol versions</td>
-<td>Update the package or the server so both are 0.3</td>
+<td>Update the package or the server so both are 0.4</td>
 </tr>
 <tr>
 <td><code>AuthenticationFailed</code> (-32)</td>
@@ -2260,6 +2326,20 @@
 </tr>
 </tbody>
 </table>
+<h3 id="connect-fails-with-securehandshaketimeout-or-securehandshakefailed">Connect fails with SecureHandshakeTimeout or SecureHandshakeFailed<a class="headerlink" href="#connect-fails-with-securehandshaketimeout-or-securehandshakefailed" title="Permanent link">&para;</a></h3>
+<p>These appear only when <code>Encryption Mode</code> is <code>Required</code>. The server answers a bad handshake with nothing on purpose, so a wrong key looks like a timeout. Check, in this order:</p>
+<ol>
+<li>The server runs with <code>NetPulse:Encryption:Mode</code> set to <code>Optional</code> or <code>Required</code>. Against a server in <code>Disabled</code> mode an encrypting client always times out.</li>
+<li><code>Server Public Keys</code> holds the key printed by <code>NetPulse.Server keygen</code> for the private key the server really uses (the server logs its public key at startup). After a server key rotation, ship a build that lists the new key.</li>
+<li>The pre-shared key is set on both sides or on neither, with the same value.</li>
+<li>The server's <code>Encryption:HandshakeTimeoutMs</code> is not shorter than the time the first packets need to travel.</li>
+<li>Nothing in between drops or rewrites UDP packets (a firewall that inspects them, a proxy).</li>
+</ol>
+<p><code>SecureHandshakeFailed</code> means that answers arrived but could not be verified, or that the session reached its counter limit. Reconnecting starts a new session.</p>
+<h3 id="connect-fails-with-invalidconfiguration-104">Connect fails with InvalidConfiguration (-104)<a class="headerlink" href="#connect-fails-with-invalidconfiguration-104" title="Permanent link">&para;</a></h3>
+<p><code>Encryption Mode</code> is <code>Required</code> but there is no valid key: <code>Server Public Keys</code> is empty or a key is not a Base64 string of 32 bytes. The Unity console shows which one. <code>Project Settings &gt; NetPulse</code> and the Hub show the same message.</p>
+<h3 id="the-server-disconnects-the-client-with-ratelimited-authtimeout-or-toomanyauthattempts">The server disconnects the client with RateLimited, AuthTimeout or TooManyAuthAttempts<a class="headerlink" href="#the-server-disconnects-the-client-with-ratelimited-authtimeout-or-toomanyauthattempts" title="Permanent link">&para;</a></h3>
+<p>The client broke a limit in <code>NetPulse:Security</code>: too many messages or bytes per second, a message larger than <code>MaxMessageBytes</code>, no authentication within <code>AuthDeadlineMs</code>, or more than <code>MaxAuthAttempts</code> failed authentications. Send less often, split large payloads, or raise the limit on the server. See <a href="../server/security/#limits-for-connected-clients">Security</a>.</p>
 <h3 id="cannot-connect-while-or-invalidstate">"Cannot connect while ..." or InvalidState<a class="headerlink" href="#cannot-connect-while-or-invalidstate" title="Permanent link">&para;</a></h3>
 <p><code>Connect()</code> works only in the <code>Disconnected</code> state, and joins work only from <code>Connected</code> or <code>InLobby</code>. Wait for the earlier operation, or call <code>Pulse.Disconnect()</code> first. <code>Pulse.State</code> shows where the client is.</p>
 <h3 id="the-connection-drops-when-the-game-freezes-or-loses-focus">The connection drops when the game freezes or loses focus<a class="headerlink" href="#the-connection-drops-when-the-game-freezes-or-loses-focus" title="Permanent link">&para;</a></h3>

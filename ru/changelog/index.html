@@ -1673,6 +1673,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#040-2026-11-08" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.4.0 (2026-11-08)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#030-2026-11-06" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1740,6 +1751,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#040-2026-11-08" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.4.0 (2026-11-08)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#030-2026-11-06" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1801,7 +1823,34 @@
 
 
 <h1 id="_1">История изменений<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>Изменения сервера, SDK плагинов и общей библиотеки протокола (<code>NetPulse.Common</code>). У Unity-пакета свой список: см. <a href="https://github.com/Klobiroff/NetPulse-Unity/blob/main/Packages/com.netpulse.unity/CHANGELOG.md">журнал изменений Unity-пакета</a>. Клиенту версии 0.3 нужен сервер версии 0.3.</p>
+<p>Изменения сервера, SDK плагинов и общей библиотеки протокола (<code>NetPulse.Common</code>). У Unity-пакета свой список: см. <a href="https://github.com/Klobiroff/NetPulse-Unity/blob/main/Packages/com.netpulse.unity/CHANGELOG.md">журнал изменений Unity-пакета</a>. Клиенту версии 0.4 нужен сервер версии 0.4.</p>
+<h2 id="040-2026-11-08">0.4.0 (2026-11-08)<a class="headerlink" href="#040-2026-11-08" title="Permanent link">&para;</a></h2>
+<p>Шифрование транспорта и усиление сервера. Клиенту 0.4 нужен сервер 0.4. При значении по умолчанию <code>Encryption:Mode</code> = <code>Disabled</code> формат на проводе остаётся таким же, как в 0.3, и клиент 0.3 по-прежнему подключается.</p>
+<p>Шифрование:</p>
+<ul>
+<li>Весь UDP-поток, включая заголовки, подтверждения и сообщения об отключении LiteNetLib, можно шифровать и аутентифицировать. Алгоритмы фиксированы: X25519 с закреплённым ключом сервера через шаблон Noise <code>NK</code> (<code>NKpsk0</code> с предварительно разделённым ключом), записи ChaCha20-Poly1305 и SHA-256/HKDF. Ничего не согласуется.</li>
+<li><code>NetPulse:Encryption</code>: <code>Mode</code> (<code>Disabled</code>, <code>Optional</code>, <code>Required</code>), <code>PrivateKeyFile</code> или <code>NETPULSE_SERVER_PRIVATE_KEY</code>, <code>PreviousPrivateKeyFiles</code> для ротации ключей, <code>PreSharedKey</code> и <code>PreSharedKeyFile</code>, <code>RequireCookie</code>, <code>CookieLifetimeMs</code>, <code>RekeyAfterPackets</code>, <code>RekeyAfterMs</code>, <code>ReplayWindow</code>, <code>SessionIdleTimeoutMs</code>, <code>ReplaceIdleMs</code>, <code>HandshakeTimeoutMs</code> и <code>PaddingBlock</code>. В режиме <code>Optional</code> или <code>Required</code> сервер не запустится без корректного ключа.</li>
+<li><code>NetPulse.Server keygen [--out файл] [--force]</code> создаёт файл приватного ключа и печатает публичный.</li>
+<li>Обмен cookie выполняется до любого обмена ключами, и каждый ответ рукопожатия короче запроса, поэтому сервер нельзя использовать для усиления трафика. Сессию с того же адреса можно заменить только после того, как она промолчала <code>ReplaceIdleMs</code>, причём старый пир отключается первым, так что новая сессия никогда не наследует аутентифицированного пира.</li>
+<li><code>NetPulse.Common.Security</code>: управляемые X25519 и ChaCha20-Poly1305 с постоянным временем и без выделений памяти на пути пакета, рукопожатие Noise, cookie, окно повторов, защита записей со сменой ключей, ядра клиента и сервера. Они проверены по векторам RFC 7748, 8439 и 5869 и сравнением с BouncyCastle, BCL и независимой реализацией Noise, только в тестовых проектах.</li>
+<li>SDK плагинов: <code>AuthRequest.IsEncrypted</code> и <code>AuthRequest.ChannelBinding</code> (32-байтовый хэш рукопожатия), <code>IActor.IsEncrypted</code>.</li>
+<li>Метрики <code>netpulse.handshakes_ok</code>, <code>handshakes_failed</code>, <code>handshakes_rate_limited</code>, <code>cookies_sent</code>, <code>decrypt_failures</code>, <code>replays</code>, <code>rekeys</code> и <code>plaintext_rejected</code>.</li>
+<li><code>NetPulse.TestClient</code> умеет шифровать: <code>--encrypt --server-public-key КЛЮЧ [--psk КЛЮЧ] [--padding N]</code>.</li>
+</ul>
+<p>Лимиты (<code>NetPulse:Security</code>, <code>0</code> выключает лимит):</p>
+<ul>
+<li>На адрес: <code>MaxConnectionsPerIp</code>, <code>ConnectionAttemptsPerIpPerSecond</code>, <code>HandshakesPerIpPerSecond</code>; на весь сервер <code>MaxHandshakesPerSecond</code>. Они работают и без шифрования там, где применимы.</li>
+<li>На пира: <code>AuthDeadlineMs</code>, <code>MaxAuthAttempts</code>, token bucket <code>MaxMessagesPerSecond</code>/<code>MessageBurst</code> и <code>MaxBytesPerSecond</code>/<code>ByteBurst</code>, а также <code>MaxMessageBytes</code>. Нарушение отключает пира с причиной <code>RateLimited</code>, <code>AuthTimeout</code> или <code>TooManyAuthAttempts</code>.</li>
+<li>Размеры: <code>MaxUserIdLength</code>, <code>MaxNickNameLength</code>, <code>MaxAuthTokenLength</code>, <code>MaxRoomNameLength</code>, <code>MaxPropertiesPerRoom</code>, <code>MaxPropertyBytes</code>, <code>MaxCachedEventsPerRoom</code>, <code>MaxTargetActors</code>. Запрос сверх лимита отклоняется с <code>InvalidRequest</code>, а не обрезается. Управляющие символы в идентификаторах пользователей, никнеймах и именах комнат отклоняются, а в тексте для лога заменяются.</li>
+<li><code>RequireRejoinToken</code>: сервер выдаёт случайный токен при каждом входе и требует его, когда возвращается неактивный игрок, так что другой клиент с тем же <code>UserId</code> место не займёт. Новое поле протокола <code>RejoinToken</code> (<code>ParamKey</code> 56).</li>
+<li><code>NetReader</code> отказывается читать больше 4096 вложенных контейнеров в одном сообщении.</li>
+<li>Новые метрики <code>netpulse.peers_rate_limited</code>, <code>connections_rejected</code>, <code>auth_timeouts</code> и <code>limit_violations</code>.</li>
+</ul>
+<p>Исправления:</p>
+<ul>
+<li>Клиент, вошедший в лобби, мог сразу после полного списка получить устаревшую дельту списка комнат. Теперь лобби рассылает накопленные дельты, прежде чем добавить подписчика.</li>
+</ul>
+<p>Тесты: всего 292, из них 112 для Common, 34 для генераторов и 146 для сервера. Новые тесты включают сквозные прогоны по реальному UDP в режимах <code>Disabled</code>, <code>Optional</code> и <code>Required</code> через записывающий прокси с повторёнными, изменёнными, удержанными и потерянными датаграммами.</p>
 <h2 id="030-2026-11-06">0.3.0 (2026-11-06)<a class="headerlink" href="#030-2026-11-06" title="Permanent link">&para;</a></h2>
 <p>Поддержка облегчённого Unity API и генератора исходного кода.</p>
 <p>Протокол и <code>NetPulse.Common</code>:</p>

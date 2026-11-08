@@ -1167,6 +1167,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#keys-for-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keys for encryption
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Keys for encryption">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rotating-the-server-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotating the server key
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#plugin-folder-layout" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1810,6 +1838,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#keys-for-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keys for encryption
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Keys for encryption">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rotating-the-server-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotating the server key
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#plugin-folder-layout" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1967,13 +2023,44 @@
 </div>
 </div>
 </div>
+<h2 id="keys-for-encryption">Keys for encryption<a class="headerlink" href="#keys-for-encryption" title="Permanent link">&para;</a></h2>
+<p>Create the server key on the machine that runs the server, outside the publish folder if you can, so that a redeploy never overwrites it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>./NetPulse.Server<span class="w"> </span>keygen<span class="w"> </span>--out<span class="w"> </span>/etc/netpulse/server.key
+</code></pre></div>
+<p>The command prints the public key. Copy it into the Unity settings. Then set the mode and the path, for example with environment variables:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>NetPulse__Encryption__Mode=Required
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>NetPulse__Encryption__PrivateKeyFile=/etc/netpulse/server.key
+</code></pre></div>
+<p>On Linux the file is created readable by its owner only. On Windows, keep it in a folder that only the service account can read. Alternatively give the key in <code>NETPULSE_SERVER_PRIVATE_KEY</code> (a secret store or the service manager can inject it), and leave <code>PrivateKeyFile</code> empty. The server will not start if both are set, if neither is set, or if the value is not a Base64 key of 32 bytes.</p>
+<p>Back the private key up. If you lose it, every client build that pins the matching public key stops working until you ship a new build.</p>
+<h3 id="rotating-the-server-key">Rotating the server key<a class="headerlink" href="#rotating-the-server-key" title="Permanent link">&para;</a></h3>
+<p>The public key is compiled into the clients, so a new key has to reach players before the old one stops working. The client can pin several public keys, and the server can accept several private keys. A rotation in three steps:</p>
+<ol>
+<li>Run <code>NetPulse.Server keygen --out server-2.key</code> to make the new key.</li>
+<li>
+<p>Ship a client build that lists both public keys (old first or last does not matter, the client tries them in turn). Keep the old key working on the server: make the new file the current key and put the old file into the list of retired keys.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">"NetPulse"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">"Encryption"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">      </span><span class="nt">"PrivateKeyFile"</span><span class="p">:</span><span class="w"> </span><span class="s2">"server-2.key"</span><span class="p">,</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">      </span><span class="nt">"PreviousPrivateKeyFiles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"server.key"</span><span class="w"> </span><span class="p">]</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="p">}</span>
+</code></pre></div>
+</li>
+<li>
+<p>When the players have moved to the new build, remove <code>server.key</code> from <code>PreviousPrivateKeyFiles</code>. Builds that still pin only the old key can no longer connect.</p>
+</li>
+</ol>
+<p>The server tells the keys apart by a 4-byte id inside the first handshake message. A client whose key the server does not know gets no reply and reports <code>SecureHandshakeTimeout</code>.</p>
 <h2 id="plugin-folder-layout">Plugin folder layout<a class="headerlink" href="#plugin-folder-layout" title="Permanent link">&para;</a></h2>
 <p>The server scans <code>NetPulse:Plugins:Directory</code> (the <code>plugins</code> folder next to the binary by default). Each subfolder is one plugin and needs a <code>plugin.json</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyPlugin"</span><span class="p">,</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">"assembly"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyPlugin.dll"</span><span class="p">,</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="nt">"factory"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyNamespace.MyFactory"</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">{</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyPlugin"</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">"assembly"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyPlugin.dll"</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="nt">"factory"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MyNamespace.MyFactory"</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">}</span>
 </code></pre></div>
 <table>
 <thead>
@@ -2008,41 +2095,41 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Create <code>/etc/systemd/system/netpulse.service</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">[Unit]</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="na">Description</span><span class="o">=</span><span class="s">NetPulse server</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="na">After</span><span class="o">=</span><span class="s">network.target</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">[Service]</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="na">Type</span><span class="o">=</span><span class="s">simple</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="na">User</span><span class="o">=</span><span class="s">netpulse</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="na">WorkingDirectory</span><span class="o">=</span><span class="s">/opt/netpulse</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="na">ExecStart</span><span class="o">=</span><span class="s">/opt/netpulse/NetPulse.Server</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="na">Environment</span><span class="o">=</span><span class="s">NetPulse__EnableConsole=false</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="na">Restart</span><span class="o">=</span><span class="s">on-failure</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="na">RestartSec</span><span class="o">=</span><span class="s">5</span>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="k">[Install]</span>
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="na">WantedBy</span><span class="o">=</span><span class="s">multi-user.target</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">[Unit]</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="na">Description</span><span class="o">=</span><span class="s">NetPulse server</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="na">After</span><span class="o">=</span><span class="s">network.target</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">[Service]</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="na">Type</span><span class="o">=</span><span class="s">simple</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="na">User</span><span class="o">=</span><span class="s">netpulse</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="na">WorkingDirectory</span><span class="o">=</span><span class="s">/opt/netpulse</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="na">ExecStart</span><span class="o">=</span><span class="s">/opt/netpulse/NetPulse.Server</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="na">Environment</span><span class="o">=</span><span class="s">NetPulse__EnableConsole=false</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="na">Restart</span><span class="o">=</span><span class="s">on-failure</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="na">RestartSec</span><span class="o">=</span><span class="s">5</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="k">[Install]</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="na">WantedBy</span><span class="o">=</span><span class="s">multi-user.target</span>
 </code></pre></div>
 <p>Then enable it:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>netpulse
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>journalctl<span class="w"> </span>-u<span class="w"> </span>netpulse<span class="w"> </span>-f
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>--now<span class="w"> </span>netpulse
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>journalctl<span class="w"> </span>-u<span class="w"> </span>netpulse<span class="w"> </span>-f
 </code></pre></div>
 <p>Make the binary executable (<code>chmod +x /opt/netpulse/NetPulse.Server</code>). For a framework-dependent build, set <code>ExecStart=/usr/bin/dotnet /opt/netpulse/NetPulse.Server.dll</code>. <code>WorkingDirectory</code> matters because <code>appsettings.json</code> is read from there. <code>systemctl stop</code> sends SIGTERM, which starts the graceful shutdown described in <a href="../running/#stopping-the-server">Running the server</a>.</p>
 </div>
 <div class="tabbed-block">
 <p>The server does not integrate with the Windows service control manager, so registering <code>NetPulse.Server.exe</code> directly with <code>sc.exe</code> does not work. Use a service wrapper such as NSSM:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">nssm</span> <span class="n">install</span> <span class="n">NetPulse</span> <span class="s2">"C:\NetPulse\NetPulse.Server.exe"</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">nssm</span> <span class="nb">set </span><span class="n">NetPulse</span> <span class="n">AppDirectory</span> <span class="s2">"C:\NetPulse"</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">nssm</span> <span class="nb">set </span><span class="n">NetPulse</span> <span class="n">AppEnvironmentExtra</span> <span class="n">NetPulse__EnableConsole</span><span class="p">=</span><span class="n">false</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">nssm</span> <span class="nb">start </span><span class="n">NetPulse</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">nssm</span> <span class="n">install</span> <span class="n">NetPulse</span> <span class="s2">"C:\NetPulse\NetPulse.Server.exe"</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">nssm</span> <span class="nb">set </span><span class="n">NetPulse</span> <span class="n">AppDirectory</span> <span class="s2">"C:\NetPulse"</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">nssm</span> <span class="nb">set </span><span class="n">NetPulse</span> <span class="n">AppEnvironmentExtra</span> <span class="n">NetPulse__EnableConsole</span><span class="p">=</span><span class="n">false</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">nssm</span> <span class="nb">start </span><span class="n">NetPulse</span>
 </code></pre></div>
 <p>A scheduled task that runs at startup with the same working directory also works.</p>
 </div>
 <div class="tabbed-block">
 <p>Publish the server, copy the publish folder into an image that has the .NET 10 runtime (or use a self-contained build), and publish the port as UDP:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">5055</span>:5055/udp<span class="w"> </span>-e<span class="w"> </span><span class="nv">NetPulse__EnableConsole</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>my-netpulse
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">5055</span>:5055/udp<span class="w"> </span>-e<span class="w"> </span><span class="nv">NetPulse__EnableConsole</span><span class="o">=</span><span class="nb">false</span><span class="w"> </span>my-netpulse
 </code></pre></div>
 <p>Without <code>/udp</code> Docker maps TCP and no client can connect.</p>
 </div>

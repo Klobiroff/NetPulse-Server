@@ -930,6 +930,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#player" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1856,6 +1867,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#player" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2064,6 +2086,58 @@
 </tr>
 </tbody>
 </table>
+<h3 id="security">Security<a class="headerlink" href="#security" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Поле</th>
+<th>По умолчанию</th>
+<th>Значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Encryption Mode</td>
+<td><code>Off</code></td>
+<td><code>Off</code> отправляет открытые пакеты. <code>Required</code> шифрует всё и отказывается от открытых пакетов, см. <a href="../connecting/#encryption">Подключение</a>.</td>
+</tr>
+<tr>
+<td>Server Public Keys</td>
+<td>пусто</td>
+<td>Один или несколько публичных ключей в Base64, которые печатает <code>NetPulse.Server keygen</code>. Инспектор и Hub проверяют формат. Несколько ключей нужны только для ротации ключа сервера.</td>
+</tr>
+<tr>
+<td>Pre Shared Key</td>
+<td>пусто</td>
+<td>Необязательный ключ в Base64 (32 байта), который есть и у сервера. Он поставляется внутри сборки и может быть извлечён.</td>
+</tr>
+<tr>
+<td>Rekey After Packets</td>
+<td><code>1000000</code></td>
+<td>Менять ключ отправки после стольких пакетов (<code>0</code> — не менять по числу)</td>
+</tr>
+<tr>
+<td>Rekey After Ms</td>
+<td><code>600000</code></td>
+<td>Менять ключ отправки через столько миллисекунд (<code>0</code> — не менять по времени)</td>
+</tr>
+<tr>
+<td>Replay Window</td>
+<td><code>4096</code></td>
+<td>Сколько пакетов помнить для защиты от повтора. Кратно 64, от 64 до 65536.</td>
+</tr>
+<tr>
+<td>Padding Block</td>
+<td><code>0</code></td>
+<td><code>0</code> — выключено, иначе от 16 до 512. Дополняет каждый пакет до кратного размера. Задавайте то же значение, что и на сервере.</td>
+</tr>
+<tr>
+<td>Handshake Timeout</td>
+<td><code>5</code> (не меньше 0,5)</td>
+<td>Сколько секунд ждать защищённого рукопожатия, прежде чем соединение завершится с <code>SecureHandshakeTimeout</code></td>
+</tr>
+</tbody>
+</table>
 <h3 id="player">Player<a class="headerlink" href="#player" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -2159,6 +2233,7 @@
 <p>Вкладка <code>Overview</code> показывает:</p>
 <ul>
 <li>Connection: состояние, онлайн или офлайн режим, пинг, серверное время, идентификатор пользователя и ник. В Play Mode есть кнопки <code>Connect</code> и <code>Disconnect</code>.</li>
+<li>Security: режим шифрования, число закреплённых ключей сервера, проблемы с форматом ключа и, в Play Mode, зашифрована ли сессия.</li>
 <li>Room: имя, число игроков относительно лимита, флаги открытости и видимости, число сетевых объектов и список игроков с пометками для вас, мастера и неактивных игроков.</li>
 <li>Traffic: сообщения и килобайты, отправленные и полученные, с текущей скоростью в килобайтах в секунду.</li>
 <li>Prefab registry: сколько префабов зарегистрировано и кнопка <code>Rebuild Prefab Registry</code>.</li>

@@ -548,6 +548,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encryption
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#states-and-events" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1821,6 +1832,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encryption
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#states-and-events" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1994,7 +2016,7 @@
 <a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="p">}</span>
 <a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="p">}</span>
 </code></pre></div>
-<p><code>Pulse.Connect(settings)</code> also becomes the active <code>NetPulseSettings.Instance</code>, so rates, the prefab registry and the other fields come from it. A third overload takes a <code>ConnectionOptions</code> object with <code>Host</code>, <code>Port</code>, <code>ConnectionKey</code>, <code>AppId</code>, <code>AppVersion</code>, <code>UserId</code>, <code>NickName</code>, <code>AuthToken</code> and <code>RequestTimeout</code>. It skips the settings asset entirely, which suits tests and tools:</p>
+<p><code>Pulse.Connect(settings)</code> also becomes the active <code>NetPulseSettings.Instance</code>, so rates, the prefab registry and the other fields come from it. A third overload takes a <code>ConnectionOptions</code> object with <code>Host</code>, <code>Port</code>, <code>ConnectionKey</code>, <code>AppId</code>, <code>AppVersion</code>, <code>UserId</code>, <code>NickName</code>, <code>AuthToken</code>, <code>RequestTimeout</code> and the <a href="#encryption">encryption</a> fields. It skips the settings asset entirely, which suits tests and tools:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse</span><span class="p">;</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">UnityEngine</span><span class="p">;</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
@@ -2035,6 +2057,57 @@
 <a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="p">}</span>
 </code></pre></div>
 <p>A rejected token fails the <code>Connect</code> operation with <code>AuthenticationFailed</code> (-32), and the server drops the connection. The token is cleared when the domain reloads or play mode restarts, so set it on every run.</p>
+<h2 id="encryption">Encryption<a class="headerlink" href="#encryption" title="Permanent link">&para;</a></h2>
+<p>NetPulse can encrypt and authenticate the whole connection. The server decides what it accepts (<a href="../../server/security/#transport-encryption">Security</a>), the client decides what it sends:</p>
+<table>
+<thead>
+<tr>
+<th>Client mode</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Off</code> (default)</td>
+<td>The client sends plain packets. It connects to a server whose mode is <code>Disabled</code> or <code>Optional</code>.</td>
+</tr>
+<tr>
+<td><code>Required</code></td>
+<td>The client never sends and never accepts a plain packet. It connects to a server whose mode is <code>Optional</code> or <code>Required</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>There is no "prefer encryption" mode on purpose: a client that falls back to plain text can be pushed into it by an attacker.</p>
+<p>To turn it on:</p>
+<ol>
+<li>Run <code>NetPulse.Server keygen</code> on the server. It prints the <strong>public</strong> key. The private key stays on the server.</li>
+<li>Open <code>Project Settings &gt; NetPulse</code> (or the settings asset) and set <code>Encryption Mode</code> to <code>Required</code>.</li>
+<li>Paste the public key into <code>Server Public Keys</code>. The field checks the format. Add a second key only while you rotate the server key (<a href="../../server/deployment/#rotating-the-server-key">Deployment</a>).</li>
+<li>Optionally fill <code>Pre Shared Key</code> if the server uses one.</li>
+</ol>
+<p>The same fields exist in code:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse</span><span class="p">;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse.Common.Security</span><span class="p">;</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">using</span><span class="w"> </span><span class="nn">UnityEngine</span><span class="p">;</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ConnectEncrypted</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MonoBehaviour</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">{</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="na">[SerializeField]</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">_serverPublicKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">;</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Start</span><span class="p">()</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConnectionOptions</span><span class="p">.</span><span class="n">From</span><span class="p">(</span><span class="n">NetPulseSettings</span><span class="p">.</span><span class="n">Instance</span><span class="p">,</span><span class="w"> </span><span class="n">Pulse</span><span class="p">.</span><span class="n">UserId</span><span class="p">,</span><span class="w"> </span><span class="s">"Player"</span><span class="p">);</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">EncryptionMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ClientEncryptionMode</span><span class="p">.</span><span class="n">Required</span><span class="p">;</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">ServerPublicKeys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">_serverPublicKey</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Pulse</span><span class="p">.</span><span class="n">Connect</span><span class="p">(</span><span class="n">options</span><span class="p">);</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">        </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"Encrypted: {Pulse.Client.IsEncrypted}"</span><span class="p">);</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="p">}</span>
+</code></pre></div>
+<p><code>ConnectionOptions.ValidateSecurity()</code> returns a message for a missing or malformed key, or <code>null</code> when the options are fine. <code>Pulse.Connect</code> fails the operation with <code>NetPulseReturnCode.InvalidConfiguration</code> (-104) in that case and sends nothing. <code>Pulse.Client.IsEncrypted</code> is <code>true</code> once the handshake has finished.</p>
+<p>If the handshake cannot finish, the connection ends with one of two disconnect reasons: <code>SecureHandshakeTimeout</code> (the server did not answer within <code>Handshake Timeout</code>, which also happens with a wrong server key or pre-shared key, because the server stays silent on purpose) and <code>SecureHandshakeFailed</code> (the answer could not be verified, or the session was closed because it reached its counter limit). A key that the server does not know looks like a timeout, not like a rejection.</p>
+<p>The server public key is not secret, but it has to be the real one: it is what protects the client from a man in the middle. The pre-shared key and the connection key travel inside the build and can be extracted, see the threat model in <a href="../../server/security/#what-is-protected-and-what-is-not">Security</a>.</p>
+<p>Encryption adds 26 bytes to every datagram (more with <code>Padding Block</code>). The cryptography is C# code in the package and works with Mono and IL2CPP on every platform that supports <code>System.Net.Sockets</code>. WebGL, which has no UDP, is outside the scope of this transport.</p>
 <h2 id="states-and-events">States and events<a class="headerlink" href="#states-and-events" title="Permanent link">&para;</a></h2>
 <p><code>Pulse.State</code> is a <code>NetState</code>. <code>Pulse.IsConnected</code> is true in every state except <code>Disconnected</code>, <code>Connecting</code> and <code>Authenticating</code>, so it also stays true while you are in a lobby or a room.</p>
 <table>
@@ -2086,43 +2159,43 @@
 <li>A <code>MonoBehaviour</code> that derives from <code>NetPulseCallbacks</code>. It registers itself in <code>OnEnable</code>, unregisters in <code>OnDisable</code>, and you override only the methods you need.</li>
 <li>Any object that implements one or more callback interfaces and is registered with <code>Pulse.AddCallbackTarget(this)</code> and <code>Pulse.RemoveCallbackTarget(this)</code>.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">System.Collections.Generic</span><span class="p">;</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse</span><span class="p">;</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse.Common</span><span class="p">;</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">using</span><span class="w"> </span><span class="nn">UnityEngine</span><span class="p">;</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">NetworkLog</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">NetPulseCallbacks</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">{</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnConnected</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">"Connected"</span><span class="p">);</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnDisconnected</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">cause</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"Disconnected: {cause}"</span><span class="p">);</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnRoomListUpdate</span><span class="p">(</span><span class="n">IReadOnlyList</span><span class="o">&lt;</span><span class="n">RoomInfo</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rooms</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"{rooms.Count} rooms"</span><span class="p">);</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="p">}</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse</span><span class="p">;</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">UnityEngine</span><span class="p">;</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">RoomWatcher</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MonoBehaviour</span><span class="p">,</span><span class="w"> </span><span class="n">IRoomCallbacks</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">{</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnEnable</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Pulse</span><span class="p">.</span><span class="n">AddCallbackTarget</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnDisable</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Pulse</span><span class="p">.</span><span class="n">RemoveCallbackTarget</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse</span><span class="p">;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse.Common</span><span class="p">;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">using</span><span class="w"> </span><span class="nn">UnityEngine</span><span class="p">;</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">NetworkLog</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">NetPulseCallbacks</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="p">{</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnConnected</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">"Connected"</span><span class="p">);</span>
 <a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerEnteredRoom</span><span class="p">(</span><span class="n">Player</span><span class="w"> </span><span class="n">player</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"{player.NickName} entered"</span><span class="p">);</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnDisconnected</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">cause</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"Disconnected: {cause}"</span><span class="p">);</span>
 <a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerLeftRoom</span><span class="p">(</span><span class="n">Player</span><span class="w"> </span><span class="n">player</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"{player.NickName} left"</span><span class="p">);</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnRoomPropertiesChanged</span><span class="p">(</span><span class="n">NetPulse</span><span class="p">.</span><span class="n">Common</span><span class="p">.</span><span class="n">PropertyTable</span><span class="w"> </span><span class="n">changed</span><span class="p">)</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerPropertiesChanged</span><span class="p">(</span><span class="n">Player</span><span class="w"> </span><span class="n">player</span><span class="p">,</span><span class="w"> </span><span class="n">NetPulse</span><span class="p">.</span><span class="n">Common</span><span class="p">.</span><span class="n">PropertyTable</span><span class="w"> </span><span class="n">changed</span><span class="p">)</span>
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnMasterClientSwitched</span><span class="p">(</span><span class="n">Player</span><span class="w"> </span><span class="n">newMaster</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"New master: {newMaster.NickName}"</span><span class="p">);</span>
-<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="p">}</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnRoomListUpdate</span><span class="p">(</span><span class="n">IReadOnlyList</span><span class="o">&lt;</span><span class="n">RoomInfo</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rooms</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"{rooms.Count} rooms"</span><span class="p">);</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse</span><span class="p">;</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">UnityEngine</span><span class="p">;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">RoomWatcher</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MonoBehaviour</span><span class="p">,</span><span class="w"> </span><span class="n">IRoomCallbacks</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">{</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnEnable</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Pulse</span><span class="p">.</span><span class="n">AddCallbackTarget</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnDisable</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Pulse</span><span class="p">.</span><span class="n">RemoveCallbackTarget</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerEnteredRoom</span><span class="p">(</span><span class="n">Player</span><span class="w"> </span><span class="n">player</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"{player.NickName} entered"</span><span class="p">);</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerLeftRoom</span><span class="p">(</span><span class="n">Player</span><span class="w"> </span><span class="n">player</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"{player.NickName} left"</span><span class="p">);</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnRoomPropertiesChanged</span><span class="p">(</span><span class="n">NetPulse</span><span class="p">.</span><span class="n">Common</span><span class="p">.</span><span class="n">PropertyTable</span><span class="w"> </span><span class="n">changed</span><span class="p">)</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnPlayerPropertiesChanged</span><span class="p">(</span><span class="n">Player</span><span class="w"> </span><span class="n">player</span><span class="p">,</span><span class="w"> </span><span class="n">NetPulse</span><span class="p">.</span><span class="n">Common</span><span class="p">.</span><span class="n">PropertyTable</span><span class="w"> </span><span class="n">changed</span><span class="p">)</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnMasterClientSwitched</span><span class="p">(</span><span class="n">Player</span><span class="w"> </span><span class="n">newMaster</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Debug</span><span class="p">.</span><span class="n">Log</span><span class="p">(</span><span class="s">$"New master: {newMaster.NickName}"</span><span class="p">);</span>
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="p">}</span>
 </code></pre></div>
 <p>Callbacks run on the main thread. An exception in one handler is logged and the others still run. The full list:</p>
 <table>
@@ -2254,6 +2327,22 @@
 <tr>
 <td><code>InvalidProtocol</code></td>
 <td>The server speaks a different transport protocol version</td>
+</tr>
+<tr>
+<td><code>SecureHandshakeTimeout</code></td>
+<td>The secure handshake got no answer within <code>Handshake Timeout</code>: a wrong server key or pre-shared key, a server without encryption, or a lost network</td>
+</tr>
+<tr>
+<td><code>SecureHandshakeFailed</code></td>
+<td>The answer of the server could not be verified, or the encrypted session was closed</td>
+</tr>
+<tr>
+<td><code>RateLimited</code></td>
+<td>The server disconnected you for sending too many messages or bytes, or a message that was too large (the transport adds extra data after the reason, for example <code>RemoteConnectionClose:RateLimited</code>)</td>
+</tr>
+<tr>
+<td><code>AuthTimeout</code>, <code>TooManyAuthAttempts</code></td>
+<td>The server disconnected you because you did not authenticate in time, or failed too often</td>
 </tr>
 <tr>
 <td><code>Failed to open a UDP socket</code></td>

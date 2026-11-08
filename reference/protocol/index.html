@@ -1571,6 +1571,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#encrypted-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encrypted transport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#primitives" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1866,6 +1877,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#encrypted-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encrypted transport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#primitives" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2111,6 +2133,58 @@
 <li>The server drops a peer that is silent for <code>DisconnectTimeoutMs</code> (10 seconds by default). Keep calling <code>PollEvents</code>, which sends the transport's keep-alive messages.</li>
 <li>When the server disconnects a client on purpose, it puts a UTF-8 reason in the disconnect data. Known reasons are <code>Overloaded</code> and <code>AuthenticationFailed</code>.</li>
 </ul>
+<h2 id="encrypted-transport">Encrypted transport<a class="headerlink" href="#encrypted-transport" title="Permanent link">&para;</a></h2>
+<p>When the server runs with <code>Encryption:Mode</code> set to <code>Optional</code> or <code>Required</code>, an encrypting client wraps every UDP datagram of the LiteNetLib stream in a record. Nothing above the transport changes: the messages described below are the plaintext inside the records. With <code>Disabled</code>, or for a plain client on an <code>Optional</code> server, the datagrams are exactly the LiteNetLib datagrams described above. The reference implementation is <code>NetPulse.Common/Security</code>, which has no dependency on LiteNetLib.</p>
+<p><strong>Discriminator.</strong> The low five bits of the first byte of a LiteNetLib packet are its packet property, which is always below <code>0x1F</code>. A NetPulse record has <code>0x1F</code> in those five bits, so the two kinds are told apart by the first byte:</p>
+<table>
+<thead>
+<tr>
+<th>First byte</th>
+<th>Record</th>
+<th>Direction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x1F</code></td>
+<td><code>Init</code></td>
+<td>client to server</td>
+</tr>
+<tr>
+<td><code>0x3F</code></td>
+<td><code>Retry</code></td>
+<td>server to client</td>
+</tr>
+<tr>
+<td><code>0x5F</code></td>
+<td><code>Response</code></td>
+<td>server to client</td>
+</tr>
+<tr>
+<td><code>0x7F</code></td>
+<td><code>Data</code></td>
+<td>both</td>
+</tr>
+<tr>
+<td><code>0xFF</code></td>
+<td><code>Data</code> with padding</td>
+<td>both</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Algorithms.</strong> There is no negotiation. The handshake is the Noise pattern <code>NK</code> with the server's static key pinned: <code>Noise_NK_25519_ChaChaPoly_SHA256</code>, or <code>Noise_NKpsk0_25519_ChaChaPoly_SHA256</code> when a pre-shared key is used, with the prologue <code>0x1F 0x01</code> followed by the 4-byte key id. The key id is the first 4 bytes of the SHA-256 of the server's public key. The result is two ChaCha20-Poly1305 keys, one per direction, and the handshake hash.</p>
+<p><strong>Handshake.</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Init     = 0x1F | version (1) | key id (4) | cookie length (1: 0 or 16) | cookie | Noise message 1 (48) | zero padding
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Retry    = 0x3F | cookie length (16) | cookie (16)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>Response = 0x5F | Noise message 2 (48)
+</code></pre></div>
+<p>An <code>Init</code> is padded to at least 96 bytes. Both replies are shorter than the request. The cookie is the first 16 bytes of <code>HMAC-SHA256(secret, address (16) | port (2, big-endian) | epoch (8))</code>; the address is the IPv6 form, with an IPv4 address written as <code>::ffff:a.b.c.d</code>. A client that has no cookie sends an empty one, receives a <code>Retry</code>, and sends the <code>Init</code> again with the cookie, and the server does the key agreement only then. The client replaces its first LiteNetLib connect request with the <code>Init</code>, so the transport's own retransmissions repeat the handshake. After the <code>Response</code>, the client sends its connect request in a <code>Data</code> record.</p>
+<p><strong>Data record.</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>type (1) | epoch (1) | counter (8, little-endian) | ciphertext | tag (16)
+</code></pre></div>
+<p>The 10 header bytes are the associated data, the nonce is four zero bytes followed by the counter, and each direction has its own key. The overhead is 26 bytes. In a padded record (type <code>0xFF</code>) the plaintext is the payload, zero bytes, and a 2-byte little-endian count of those zero bytes, and the whole record is a multiple of the padding block. The counter starts at 0 for each direction and only grows. The receiver keeps a sliding window (4096 packets by default), checks the tag first and moves the window only after the tag is valid.</p>
+<p><strong>Rekeying.</strong> Each direction replaces its key by <code>HKDF-Expand(key, "rekey", 32)</code> and increments the epoch byte. The receiver accepts the next four epochs ahead, which covers packet loss, and keeps the previous key until the replay window has passed it.</p>
+<p><strong>Errors.</strong> The server answers a malformed or unverifiable record with nothing. A client that gets no reply sees only a timeout.</p>
 <h2 id="primitives">Primitives<a class="headerlink" href="#primitives" title="Permanent link">&para;</a></h2>
 <p>All multi-byte numbers are little-endian.</p>
 <table>
@@ -2198,8 +2272,8 @@
 <p>Request ids are yours to choose. Use a non-zero id for every request you want answered. The server answers every operation except <code>RaiseEvent</code>: that one gets an answer only when the id is non-zero or the event fails.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <p><code>parameters</code> is a dictionary from a one-byte key to a value:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>varuint count
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>count x ( key: byte, value )
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>varuint count
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>count x ( key: byte, value )
 </code></pre></div>
 <p>The keys are the <code>ParamKey</code> constants, listed in <a href="../codes/#parameter-keys">Codes and keys</a>. Missing keys read as defaults. The server converts between numeric types when it reads a parameter, so sending an <code>int</code> where a <code>byte</code> is expected works as long as the value fits.</p>
 <h2 id="value-types">Value types<a class="headerlink" href="#value-types" title="Permanent link">&para;</a></h2>
@@ -2560,104 +2634,104 @@
 <p>When the room property <code>_scene</code> changes, the server removes every scene object and every object not marked as persistent, with their cached events.</p>
 <h2 id="a-minimal-client">A minimal client<a class="headerlink" href="#a-minimal-client" title="Permanent link">&para;</a></h2>
 <p>This .NET program connects, authenticates and joins a room using <code>NetPulse.Common</code> and LiteNetLib 1.3.5:</p>
-<div class="highlight"><span class="filename">WireClient.csproj</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">&lt;Project</span><span class="w"> </span><span class="na">Sdk=</span><span class="s">"Microsoft.NET.Sdk"</span><span class="nt">&gt;</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&lt;PropertyGroup&gt;</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">&lt;OutputType&gt;</span>Exe<span class="nt">&lt;/OutputType&gt;</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">&lt;TargetFramework&gt;</span>net10.0<span class="nt">&lt;/TargetFramework&gt;</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">&lt;ImplicitUsings&gt;</span>enable<span class="nt">&lt;/ImplicitUsings&gt;</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">&lt;Nullable&gt;</span>enable<span class="nt">&lt;/Nullable&gt;</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="nt">&lt;/PropertyGroup&gt;</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span><span class="nt">&lt;ItemGroup&gt;</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"LiteNetLib"</span><span class="w"> </span><span class="na">Version=</span><span class="s">"1.3.5"</span><span class="w"> </span><span class="nt">/&gt;</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">&lt;ProjectReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"path\to\NetPulse_Server\src\NetPulse.Common\NetPulse.Common.csproj"</span><span class="w"> </span><span class="nt">/&gt;</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="nt">&lt;/ItemGroup&gt;</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="nt">&lt;/Project&gt;</span>
+<div class="highlight"><span class="filename">WireClient.csproj</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">&lt;Project</span><span class="w"> </span><span class="na">Sdk=</span><span class="s">"Microsoft.NET.Sdk"</span><span class="nt">&gt;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">&lt;PropertyGroup&gt;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">&lt;OutputType&gt;</span>Exe<span class="nt">&lt;/OutputType&gt;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">&lt;TargetFramework&gt;</span>net10.0<span class="nt">&lt;/TargetFramework&gt;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">&lt;ImplicitUsings&gt;</span>enable<span class="nt">&lt;/ImplicitUsings&gt;</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="nt">&lt;Nullable&gt;</span>enable<span class="nt">&lt;/Nullable&gt;</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nt">&lt;/PropertyGroup&gt;</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="nt">&lt;ItemGroup&gt;</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"LiteNetLib"</span><span class="w"> </span><span class="na">Version=</span><span class="s">"1.3.5"</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="nt">&lt;ProjectReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">"path\to\NetPulse_Server\src\NetPulse.Common\NetPulse.Common.csproj"</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="nt">&lt;/ItemGroup&gt;</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="nt">&lt;/Project&gt;</span>
 </code></pre></div>
-<div class="highlight"><span class="filename">MinimalClient.cs</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">LiteNetLib</span><span class="p">;</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse.Common</span><span class="p">;</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">WireExamples</span><span class="p">;</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MinimalClient</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">{</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">NetWriter</span><span class="w"> </span><span class="n">_writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">EventBasedNetListener</span><span class="w"> </span><span class="n">_listener</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">NetManager</span><span class="w"> </span><span class="n">_manager</span><span class="p">;</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NetPeer</span><span class="o">?</span><span class="w"> </span><span class="n">_server</span><span class="p">;</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">ushort</span><span class="w"> </span><span class="n">_nextRequestId</span><span class="p">;</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">MinimalClient</span><span class="p">()</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">        </span><span class="n">_manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NetManager</span><span class="p">(</span><span class="n">_listener</span><span class="p">);</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">        </span><span class="n">_listener</span><span class="p">.</span><span class="n">PeerConnectedEvent</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnConnected</span><span class="p">;</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">        </span><span class="n">_listener</span><span class="p">.</span><span class="n">NetworkReceiveEvent</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnReceive</span><span class="p">;</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Run</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="n">TimeSpan</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">        </span><span class="n">_manager</span><span class="p">.</span><span class="n">Start</span><span class="p">();</span>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">        </span><span class="n">_manager</span><span class="p">.</span><span class="n">Connect</span><span class="p">(</span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">DefaultConnectionKey</span><span class="p">);</span>
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">end</span><span class="p">)</span>
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">        </span><span class="p">{</span>
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">            </span><span class="n">_manager</span><span class="p">.</span><span class="n">PollEvents</span><span class="p">();</span>
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">            </span><span class="n">Thread</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">        </span><span class="p">}</span>
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">        </span><span class="n">_manager</span><span class="p">.</span><span class="n">Stop</span><span class="p">();</span>
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>
-<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnConnected</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">)</span>
-<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">        </span><span class="n">_server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">;</span>
-<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">login</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AuthenticateRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"demo"</span><span class="p">,</span><span class="w"> </span><span class="n">NickName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Demo"</span><span class="w"> </span><span class="p">};</span>
-<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="w">        </span><span class="n">Send</span><span class="p">(</span><span class="n">OpCode</span><span class="p">.</span><span class="n">Authenticate</span><span class="p">,</span><span class="w"> </span><span class="n">login</span><span class="p">.</span><span class="n">ToParameters</span><span class="p">());</span>
-<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>
-<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="kt">byte</span><span class="w"> </span><span class="n">opCode</span><span class="p">,</span><span class="w"> </span><span class="n">ParameterDictionary</span><span class="w"> </span><span class="n">parameters</span><span class="p">)</span>
-<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">OperationRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">OpCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">opCode</span><span class="p">,</span><span class="w"> </span><span class="n">RequestId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">++</span><span class="n">_nextRequestId</span><span class="p">,</span><span class="w"> </span><span class="n">Parameters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="p">};</span>
-<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">Serialize</span><span class="p">(</span><span class="n">_writer</span><span class="p">,</span><span class="w"> </span><span class="n">request</span><span class="p">);</span>
-<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="w">        </span><span class="n">_server</span><span class="o">!</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">packet</span><span class="p">.</span><span class="n">Array</span><span class="o">!</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">Offset</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">Count</span><span class="p">,</span><span class="w"> </span><span class="n">DeliveryMethod</span><span class="p">.</span><span class="n">ReliableOrdered</span><span class="p">);</span>
-<a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>
-<a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnReceive</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="kt">byte</span><span class="w"> </span><span class="n">channel</span><span class="p">,</span><span class="w"> </span><span class="n">DeliveryMethod</span><span class="w"> </span><span class="n">method</span><span class="p">)</span>
-<a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NetReader</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytesSegment</span><span class="p">());</span>
-<a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">ReadKind</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
-<a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>
-<a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MessageKind</span><span class="p">.</span><span class="n">OperationResponse</span><span class="p">)</span>
-<a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a><span class="w">        </span><span class="p">{</span>
-<a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a><span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">ReadOperationResponse</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
-<a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a><span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"response op={response.OpCode} request={response.RequestId} code={response.ReturnCode}"</span><span class="p">);</span>
-<a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a>
-<a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">OpCode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">OpCode</span><span class="p">.</span><span class="n">Authenticate</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">ReturnCode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ReturnCode</span><span class="p">.</span><span class="n">Ok</span><span class="p">)</span>
-<a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="w">            </span><span class="p">{</span>
-<a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a><span class="w">                </span><span class="n">Send</span><span class="p">(</span><span class="n">OpCode</span><span class="p">.</span><span class="n">JoinOrCreateRoom</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JoinOrCreateRoomRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RoomName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"wire-demo"</span><span class="w"> </span><span class="p">}.</span><span class="n">ToParameters</span><span class="p">());</span>
-<a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="w">            </span><span class="p">}</span>
-<a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a><span class="w">        </span><span class="p">}</span>
-<a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a><span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MessageKind</span><span class="p">.</span><span class="n">Event</span><span class="p">)</span>
-<a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a><span class="w">        </span><span class="p">{</span>
-<a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a><span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">received</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">ReadEvent</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
-<a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a><span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"event code={received.Code}"</span><span class="p">);</span>
-<a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a><span class="w">        </span><span class="p">}</span>
-<a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a>
-<a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a><span class="w">        </span><span class="n">reader</span><span class="p">.</span><span class="n">Recycle</span><span class="p">();</span>
-<a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a><span class="w">    </span><span class="p">}</span>
-<a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a><span class="p">}</span>
+<div class="highlight"><span class="filename">MinimalClient.cs</span><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">LiteNetLib</span><span class="p">;</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">using</span><span class="w"> </span><span class="nn">NetPulse.Common</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">WireExamples</span><span class="p">;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MinimalClient</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">{</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">NetWriter</span><span class="w"> </span><span class="n">_writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">EventBasedNetListener</span><span class="w"> </span><span class="n">_listener</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">NetManager</span><span class="w"> </span><span class="n">_manager</span><span class="p">;</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">NetPeer</span><span class="o">?</span><span class="w"> </span><span class="n">_server</span><span class="p">;</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="kt">ushort</span><span class="w"> </span><span class="n">_nextRequestId</span><span class="p">;</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">MinimalClient</span><span class="p">()</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">        </span><span class="n">_manager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NetManager</span><span class="p">(</span><span class="n">_listener</span><span class="p">);</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">        </span><span class="n">_listener</span><span class="p">.</span><span class="n">PeerConnectedEvent</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnConnected</span><span class="p">;</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">        </span><span class="n">_listener</span><span class="p">.</span><span class="n">NetworkReceiveEvent</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnReceive</span><span class="p">;</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Run</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="n">TimeSpan</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">        </span><span class="n">_manager</span><span class="p">.</span><span class="n">Start</span><span class="p">();</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">        </span><span class="n">_manager</span><span class="p">.</span><span class="n">Connect</span><span class="p">(</span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">DefaultConnectionKey</span><span class="p">);</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">DateTime</span><span class="p">.</span><span class="n">UtcNow</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">end</span><span class="p">)</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">            </span><span class="n">_manager</span><span class="p">.</span><span class="n">PollEvents</span><span class="p">();</span>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">            </span><span class="n">Thread</span><span class="p">.</span><span class="n">Sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="w">        </span><span class="n">_manager</span><span class="p">.</span><span class="n">Stop</span><span class="p">();</span>
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnConnected</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">)</span>
+<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="w">        </span><span class="n">_server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">peer</span><span class="p">;</span>
+<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">login</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AuthenticateRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">UserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"demo"</span><span class="p">,</span><span class="w"> </span><span class="n">NickName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Demo"</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="w">        </span><span class="n">Send</span><span class="p">(</span><span class="n">OpCode</span><span class="p">.</span><span class="n">Authenticate</span><span class="p">,</span><span class="w"> </span><span class="n">login</span><span class="p">.</span><span class="n">ToParameters</span><span class="p">());</span>
+<a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a>
+<a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Send</span><span class="p">(</span><span class="kt">byte</span><span class="w"> </span><span class="n">opCode</span><span class="p">,</span><span class="w"> </span><span class="n">ParameterDictionary</span><span class="w"> </span><span class="n">parameters</span><span class="p">)</span>
+<a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">OperationRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">OpCode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">opCode</span><span class="p">,</span><span class="w"> </span><span class="n">RequestId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">++</span><span class="n">_nextRequestId</span><span class="p">,</span><span class="w"> </span><span class="n">Parameters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">Serialize</span><span class="p">(</span><span class="n">_writer</span><span class="p">,</span><span class="w"> </span><span class="n">request</span><span class="p">);</span>
+<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a><span class="w">        </span><span class="n">_server</span><span class="o">!</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="n">packet</span><span class="p">.</span><span class="n">Array</span><span class="o">!</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">Offset</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">.</span><span class="n">Count</span><span class="p">,</span><span class="w"> </span><span class="n">DeliveryMethod</span><span class="p">.</span><span class="n">ReliableOrdered</span><span class="p">);</span>
+<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a>
+<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a><span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnReceive</span><span class="p">(</span><span class="n">NetPeer</span><span class="w"> </span><span class="n">peer</span><span class="p">,</span><span class="w"> </span><span class="n">NetPacketReader</span><span class="w"> </span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="kt">byte</span><span class="w"> </span><span class="n">channel</span><span class="p">,</span><span class="w"> </span><span class="n">DeliveryMethod</span><span class="w"> </span><span class="n">method</span><span class="p">)</span>
+<a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">NetReader</span><span class="p">(</span><span class="n">reader</span><span class="p">.</span><span class="n">GetRemainingBytesSegment</span><span class="p">());</span>
+<a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a><span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">ReadKind</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+<a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a>
+<a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MessageKind</span><span class="p">.</span><span class="n">OperationResponse</span><span class="p">)</span>
+<a id="__codelineno-4-56" name="__codelineno-4-56" href="#__codelineno-4-56"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a><span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">ReadOperationResponse</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+<a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a><span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"response op={response.OpCode} request={response.RequestId} code={response.ReturnCode}"</span><span class="p">);</span>
+<a id="__codelineno-4-59" name="__codelineno-4-59" href="#__codelineno-4-59"></a>
+<a id="__codelineno-4-60" name="__codelineno-4-60" href="#__codelineno-4-60"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">OpCode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">OpCode</span><span class="p">.</span><span class="n">Authenticate</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">ReturnCode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ReturnCode</span><span class="p">.</span><span class="n">Ok</span><span class="p">)</span>
+<a id="__codelineno-4-61" name="__codelineno-4-61" href="#__codelineno-4-61"></a><span class="w">            </span><span class="p">{</span>
+<a id="__codelineno-4-62" name="__codelineno-4-62" href="#__codelineno-4-62"></a><span class="w">                </span><span class="n">Send</span><span class="p">(</span><span class="n">OpCode</span><span class="p">.</span><span class="n">JoinOrCreateRoom</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JoinOrCreateRoomRequest</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">RoomName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"wire-demo"</span><span class="w"> </span><span class="p">}.</span><span class="n">ToParameters</span><span class="p">());</span>
+<a id="__codelineno-4-63" name="__codelineno-4-63" href="#__codelineno-4-63"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-4-64" name="__codelineno-4-64" href="#__codelineno-4-64"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-4-65" name="__codelineno-4-65" href="#__codelineno-4-65"></a><span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="nf">if</span><span class="w"> </span><span class="p">(</span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MessageKind</span><span class="p">.</span><span class="n">Event</span><span class="p">)</span>
+<a id="__codelineno-4-66" name="__codelineno-4-66" href="#__codelineno-4-66"></a><span class="w">        </span><span class="p">{</span>
+<a id="__codelineno-4-67" name="__codelineno-4-67" href="#__codelineno-4-67"></a><span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">received</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Protocol</span><span class="p">.</span><span class="n">ReadEvent</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+<a id="__codelineno-4-68" name="__codelineno-4-68" href="#__codelineno-4-68"></a><span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$"event code={received.Code}"</span><span class="p">);</span>
+<a id="__codelineno-4-69" name="__codelineno-4-69" href="#__codelineno-4-69"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-4-70" name="__codelineno-4-70" href="#__codelineno-4-70"></a>
+<a id="__codelineno-4-71" name="__codelineno-4-71" href="#__codelineno-4-71"></a><span class="w">        </span><span class="n">reader</span><span class="p">.</span><span class="n">Recycle</span><span class="p">();</span>
+<a id="__codelineno-4-72" name="__codelineno-4-72" href="#__codelineno-4-72"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-4-73" name="__codelineno-4-73" href="#__codelineno-4-73"></a><span class="p">}</span>
 </code></pre></div>
 <p>Start it from a top-level <code>Program.cs</code>:</p>
-<div class="highlight"><span class="filename">Program.cs</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">WireExamples</span><span class="p">;</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">new</span><span class="w"> </span><span class="nf">MinimalClient</span><span class="p">().</span><span class="n">Run</span><span class="p">(</span><span class="s">"127.0.0.1"</span><span class="p">,</span><span class="w"> </span><span class="mi">5055</span><span class="p">,</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+<div class="highlight"><span class="filename">Program.cs</span><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">using</span><span class="w"> </span><span class="nn">WireExamples</span><span class="p">;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">new</span><span class="w"> </span><span class="nf">MinimalClient</span><span class="p">().</span><span class="n">Run</span><span class="p">(</span><span class="s">"127.0.0.1"</span><span class="p">,</span><span class="w"> </span><span class="mi">5055</span><span class="p">,</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
 </code></pre></div>
 <p>Against a running server it prints:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>response op=1 request=1 code=0
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>response op=12 request=2 code=0
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>response op=1 request=1 code=0
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>response op=12 request=2 code=0
 </code></pre></div>
 <p><code>Protocol.Serialize</code> returns a segment of the writer's internal buffer, so send it before you reuse the writer.</p>
 
